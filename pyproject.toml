@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools >= 69.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eptalights-python"
+version = "0.0.1"
+description = "Eptalights python Library"
+readme = "README.md"
+requires-python = ">= 3.11"
+license = { text = "Eptalights Research" }
+authors = [ { name = "Eptalights Research", email = "opensource@eptalights.com" } ]
+keywords = [
+    "code-analysis",
+    "program-analysis",
+    "gimple",
+    "egimple",
+    "eptalights",
+]
+dependencies = [
+    "pydantic == 2.10.3",
+    "cxxfilt == 0.3.0",
+    "SQLAlchemy == 2.0.36",
+    "printree == 0.2.0",
+    "msgpack == 1.0.8",
+]
+
+[project.urls]
+Documentation = "https://eptalights.readthedocs.io"
+Source = "https://github.com/eptalights/eptalights-python"
+
+[project.scripts]
+eptalights_build_callgraph = "eptalights.core.cmdtools:build_callgraph"
+eptalights_print_calltree = "eptalights.core.cmdtools:print_calltree"
+eptalights_fsearch = "eptalights.core.cmdtools:search_function"
+eptalights_decompile_all = "eptalights.core.cmdtools:decompile_all"
+
+[project.optional-dependencies]
+dev = [
+    # Running tests and linters
+    "black == 24.10.0",
+    "flake8 == 7.1.1",
+    "pytest == 8.3.3",
+]
+docs = [
+    "Sphinx == 8.1.3",
+    "sphinx-book-theme == 1.1.3",
+    "sphinx-rtd-theme == 3.0.2",
+]
+
+[tool.setuptools.packages.find]
+where = [ "src" ]
+
+[tool.setuptools]
+zip-safe = false
+package-dir = { "" = "src" }
+
+[tool.pytest.ini_options]
+addopts = "-vv --durations=0"
+testpaths = ["tests"]
