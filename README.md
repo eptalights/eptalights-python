@@ -32,7 +32,7 @@ pip install git+https://github.com/eptalights/eptalights-python.git
 
 ## Setting up a Development Environment
 
-The latest code under development is available on GitHub at https://github.com/eptalights/eptalights-python.
+The latest code under development is available on GitHub at https://github.com/eptalights/eptalights-python.  
 To obtain this version for experimental features or for development:
 
 ```bash

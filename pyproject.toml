@@ -8,8 +8,12 @@ version = "0.0.1"
 description = "Eptalights python Library"
 readme = "README.md"
 requires-python = ">= 3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
 license = { text = "Eptalights Research" }
-authors = [ { name = "Eptalights Research", email = "opensource@eptalights.com" } ]
+authors = [ { name = "Eptalights Research", email = "samuelasirifi1@gmail.com" } ]
 keywords = [
     "code-analysis",
     "program-analysis",
