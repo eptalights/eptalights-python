@@ -6,7 +6,7 @@ Easily access functions, callsites, variables, control flow graphs (CFG), and ot
 
 ## Documentation
 
-For detailed documentation, please visit [Eptalights Documentation](https://eptalights.readthedocs.io/).
+For detailed documentation, please visit [Eptalights Documentation](https://eptalights-python.readthedocs.io/en/latest/).
 
 You can also check out this [blog post](https://eptalights.com/blog/01-introduction-to-eptalights-technology/) for an introduction to Eptalights Technology.
 
@@ -15,7 +15,6 @@ You can also check out this [blog post](https://eptalights.com/blog/01-introduct
 Eptalights currently supports the following languages, with more on the way:
 
 - **C/C++** (via [GCC GIMPLE](https://github.com/eptalights/gimple-extractor))
-- **PHP** (via [PHP Opcode](#))
 
 ## Installation
 
