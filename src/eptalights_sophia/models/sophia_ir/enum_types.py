@@ -1,13 +1,8 @@
 from enum import Enum, auto
-from eptalights.core.printer import PrettyPrinter
+from eptalights_sophia.core.printer import PrettyPrinter
 
 
 class AutoStrEnum(str, Enum):
-    """
-    StrEnum where enum.auto() returns the field name.
-    See https://docs.python.org/3.9/library/enum.html#using-automatic-values
-    """
-
     @staticmethod
     def _generate_next_value_(
         name: str, start: int, count: int, last_values: list
@@ -15,11 +10,12 @@ class AutoStrEnum(str, Enum):
         return name
 
 
-class VarType(AutoStrEnum):
+class VarType(Enum):
     """Represents the type of a variable in program analysis.
 
     Attributes
     ----------
+
     FUNCTION_ARGUMENT
         Represents a function argument.
     LOCAL_VARIABLE
@@ -43,42 +39,39 @@ class VarType(AutoStrEnum):
         return self.name
 
 
-class TokenType(AutoStrEnum):
+class TokenType(Enum):
     """
-    DepthType Enumeration
-    =====================
+    An enumeration representing the token type of an element.
 
-    An enumeration representing the depth type of an element.
-
-    Enumeration Members
-    -------------------
+    Attributes
+    ----------
 
     IS_UNDEF
-        Represents an undefined depth type.
+        Represents an undefined token type.
 
     IS_VARIABLE
-        Represents a variable depth type.
+        Represents a variable token type.
         Example: Array access used with a variable index,
         e.g., `a[n]` where `a` and `n` are variables.
 
     IS_CONSTANT
-        Represents a constant depth type.
+        Represents a constant token type.
         Example: Array access used with a constant index, e.g., `a[10]`.
 
     IS_SYMBOL
-        Represents a symbol depth type.
+        Represents a symbol token type.
         Example: Symbols like `[`, `]`, `*`, `.`, `->`, `&`, etc.
 
     IS_ATTRIBUTE
-        Represents an attribute depth type.
+        Represents an attribute token type.
         Example: Struct field access, e.g., `st.data`, `st->data`.
 
     IS_TYPE
-        Represents a type depth type.
+        Represents a type token type.
         Example: Type declaration, e.g., `struct FILE fp`.
 
     IS_FUNCTION
-        Represents a function depth type.
+        Represents a function token type.
         Example: Functions passed as arguments to calls,
         e.g., `select_files` and `alphasort`.
 
@@ -107,7 +100,7 @@ class TokenType(AutoStrEnum):
             )
 
     IS_VARIABLE_AND_IS_FUNCTION
-        Represents both a variable and a function depth type.
+        Represents both a variable and a function token type.
     """
 
     IS_UNDEF = auto()
@@ -123,27 +116,28 @@ class TokenType(AutoStrEnum):
         return f"{self.name}"
 
 
-class OpType(AutoStrEnum):
+class OpType(Enum):
     """
     Enumeration of operation types.
 
     Attributes
     ----------
-    NOP : OpType
+
+    NOP
         No operation.
-    ASSIGN : OpType
+    ASSIGN
         Assignment operation.
-    CALL : OpType
+    CALL
         Function or method call.
-    RETURN : OpType
+    RETURN
         Return from a function or method.
-    COND : OpType
+    COND
         Conditional operation (e.g., if-else).
-    GOTO : OpType
+    GOTO
         Unconditional jump to another location.
-    SWITCH : OpType
+    SWITCH
         Switch-case operation.
-    LABEL : OpType
+    LABEL
         Label for jump or branch operations.
     """
 
@@ -168,124 +162,121 @@ class OpType(AutoStrEnum):
         return f"{self.name}"
 
 
-
-class ExprType(AutoStrEnum):
+class ExprType(Enum):
     """
-    ExprType
-    ========
-
-    Enumeration of expression types.
+    Numeration of expression types.
 
     Attributes
     ----------
-    NO_EXPR 
+
+    NO_EXPR
         No expression.
 
-    MULT_EXPR 
+    MULT_EXPR
         Multiplication expression (`lhs * rhs`).
 
-    PLUS_EXPR 
+    PLUS_EXPR
         Addition expression (`lhs + rhs`).
 
-    MINUS_EXPR 
+    MINUS_EXPR
         Subtraction expression (`lhs - rhs`).
 
-    RDIV_EXPR 
+    RDIV_EXPR
         Right division expression (`lhs / rhs`).
 
-    DIV_EXPR 
+    DIV_EXPR
         Division expression (`lhs / rhs`).
 
-    MOD_EXPR 
+    MOD_EXPR
         Modulo expression (`lhs % rhs`).
 
-    GREATER_THAN_OR_EQUAL_EXPR 
+    GREATER_THAN_OR_EQUAL_EXPR
         Greater than or equal to expression (`lhs >= rhs`).
 
-    GREATER_THAN_EXPR 
+    GREATER_THAN_EXPR
         Greater than expression (`lhs > rhs`).
 
-    LESS_THAN_EXPR 
+    LESS_THAN_EXPR
         Less than expression (`lhs < rhs`).
 
-    LESS_THAN_OR_EQUAL_EXPR 
+    LESS_THAN_OR_EQUAL_EXPR
         Less than or equal to expression (`lhs <= rhs`).
 
-    EQUAL_EXPR 
+    EQUAL_EXPR
         Equal to expression (`lhs == rhs`).
 
-    NOT_EQUAL_EXPR 
+    NOT_EQUAL_EXPR
         Not equal to expression (`lhs != rhs`).
 
-    BITWISE_AND_EXPR 
+    BITWISE_AND_EXPR
         Bitwise AND expression (`lhs && rhs`).
 
-    BITWISE_EXCLUSIVE_OR_EXPR 
+    BITWISE_EXCLUSIVE_OR_EXPR
         Bitwise exclusive OR expression (`lhs & rhs`).
 
-    BITWISE_INCLUSIVE_OR_EXPR 
+    BITWISE_INCLUSIVE_OR_EXPR
         Bitwise inclusive OR expression (`lhs | rhs`).
 
-    BITWISE_NOT_EXPR 
+    BITWISE_NOT_EXPR
         Bitwise NOT expression (`~lhs`).
 
-    TRUNC_DIV_EXPR 
+    TRUNC_DIV_EXPR
         Truncated division expression (`lhs / rhs`).
 
-    TRUNC_MOD_EXPR 
+    TRUNC_MOD_EXPR
         Truncated modulo expression (`lhs % rhs`).
 
-    LSHIFT_EXPR 
+    LSHIFT_EXPR
         Left shift expression (`lhs << rhs`).
 
-    RSHIFT_EXPR 
+    RSHIFT_EXPR
         Right shift expression (`lhs >> rhs`).
 
-    RROTATE_EXPR 
+    RROTATE_EXPR
         Right rotate expression (`(((x) << (b)) | ((x) >> (32 - (b))))`).
 
-    NEGATE_EXPR 
+    NEGATE_EXPR
         Negate expression (`~lhs`).
 
-    MIN_EXPR 
+    MIN_EXPR
         Minimum expression (`(lhs < rhs)`).
 
-    MAX_EXPR 
+    MAX_EXPR
         Maximum expression (`(lhs > rhs)`).
 
-    POINTER_PLUS_EXPR 
+    POINTER_PLUS_EXPR
         Pointer plus expression (`lhs + rhs`).
         This node represents pointer arithmetic.
         The first operand is always a pointer/reference type.
         The second operand is always an unsigned integer type compatible with sizetype.
         This is the only binary arithmetic operand that can operate on pointer types.
 
-    FIX_TRUNC_EXPR 
+    FIX_TRUNC_EXPR
         Fix trunc expression (conversion of floating-point value to an integer).
         These nodes represent conversion of a floating-point value to an integer.
         The single operand will have a floating-point type, while the complete
         expression will have an integral (or boolean) type.
         The operand is rounded towards zero.
 
-    dst[bool, int] = (floating-point type)rhs
+        dst[bool, int] = (floating-point type)rhs
 
-    REALPART_EXPR: auto()
+    REALPART_EXPR
         TODO
 
-    IMAGPART_EXPR: auto()
+    IMAGPART_EXPR
         TODO
 
-    ABS_EXPR: auto()
+    ABS_EXPR
         TODO
 
-    ABSU_EXPR: auto()
+    ABSU_EXPR
         These nodes represent the absolute value of the single operand in equivalent
         unsigned type such that ABSU_EXPR of TYPE_MIN is well defined.
 
-    SPACESHIP_EXPR 
+    SPACESHIP_EXPR
         Maximum expression (`(lhs <=> rhs)`).
 
-    UNDEF 
+    UNDEF
         Undefined expression.
     """  # noqa: E501
 

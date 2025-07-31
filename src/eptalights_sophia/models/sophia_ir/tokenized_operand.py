@@ -1,8 +1,8 @@
-from pydantic import BaseModel, StrictInt
+from pydantic import BaseModel, StrictInt, field_serializer
 from typing import List, Optional, Dict
 from pprint import pprint
-from eptalights.models.egimple.enum_types import TokenType
-from eptalights.core.printer import PrettyPrinter
+from eptalights_sophia.models.sophia_ir.enum_types import TokenType
+from eptalights_sophia.core.printer import PrettyPrinter
 
 
 class TokenModel(BaseModel):
@@ -35,6 +35,10 @@ class TokenModel(BaseModel):
     value: Optional[str] = None
     value_extended: Optional[str] = None
     discovery_depth: int = 0
+
+    @field_serializer("token_type", when_used="always")
+    def serialize_token_type(self, token_type: TokenType):
+        return token_type.value
 
 
 class TokenizedOperandModel(BaseModel):
@@ -79,6 +83,10 @@ class TokenizedOperandModel(BaseModel):
     current_depth_position: StrictInt = 0
     tokens: List[TokenModel] = []
     _debug_visited_nodes: List[str] = []
+
+    @field_serializer("operand_type", when_used="always")
+    def serialize_operand_type(self, operand_type: TokenType):
+        return operand_type.value
 
     def has_ssa_variable_extracted(self) -> bool:
         """Checks whether the operand has an SSA variable extracted.

@@ -5,10 +5,11 @@ import msgpack
 import json
 from typing import Any
 
-from eptalights.models import (
+from eptalights_sophia.models import (
     ConfigModel,
     BasicGimpleFunctionModel,
     BasicOpcodeFunctionModel,
+    JVMClassModel,
 )
 
 """
@@ -54,11 +55,15 @@ class LoaderAPI:
         function_data = self._read_file_content(filepath)
 
         if code_type == "gcc_gimple":
-            fn = BasicGimpleFunctionModel(**function_data)
-            return fn
+            basic_model = BasicGimpleFunctionModel(**function_data)
+            return basic_model
 
         if code_type == "php_opcode":
             basic_model = BasicOpcodeFunctionModel(**function_data)
+            return basic_model
+
+        if code_type == "jvm_jimple":
+            basic_model = JVMClassModel(**function_data)
             return basic_model
 
         if code_type == "custom" and CUSTOM_BASIC_CLASS is not None:
@@ -77,7 +82,7 @@ class LoaderAPI:
         return ConfigModel(**config_data.get("project"))
 
     def iter_basic_files(self) -> tuple[str, Any]:
-        dir_path = self.config.extractor_output
+        dir_path = self.config.extractor_output_path
         code_type = self.config.code_type
 
         for findex, file_path in self._iter_files(dir_path):

@@ -4,13 +4,17 @@
 Working with Steps or Instructions
 ==================================
 
-Data model or structure for steps - :class:`~eptalights.models.egimple.function.EGimpleIRNopModel` :class:`~eptalights.models.egimple.function.EGimpleIRAssignModel` :class:`~eptalights.models.egimple.function.EGimpleIRCallModel` :class:`~eptalights.models.egimple.function.EGimpleIRCondModel` :class:`~eptalights.models.egimple.function.EGimpleIRReturnModel` :class:`~eptalights.models.egimple.function.EGimpleIRGotoModel` :class:`~eptalights.models.egimple.function.EGimpleIRSwitchModel`
+Each function contains a series of steps or instructions that perform a specific operation. 
+
+There are only seven types of operations, making analysis easier by avoiding the complexity of raw source ASTs or numerous low-level instructions.
 
 Steps are essentially instructions or individual IR code statements. All steps have unique identifier called ``step_index``.
 
+Data model or structure for steps - :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRNopModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRAssignModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRCallModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRCondModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRReturnModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRGotoModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRSwitchModel`
 
-1. print OP and Pseudo-C code of steps
---------------------------------------
+
+1. print OP type and Pseudo-C code of steps
+---------------------------------------------
 
 Steps are simply the instructions of the function and can be found in `fn.steps`.  
 

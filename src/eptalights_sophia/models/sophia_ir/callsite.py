@@ -58,10 +58,9 @@ class CallsiteManagerModel(BaseModel):
     Attributes
     ----------
     step_callsites : dict[int, str], optional
-        A mapping from step indices to SSA (Static Single Assignment)
-        variable names. Defaults to an empty dictionary.
+        A mapping from step indices to Callsite. Defaults to an empty dictionary.
     unique_callsites : dict[str, List[str]], optional
-        A mapping from function names to lists of their SSA variable names.
+        A mapping from function names to lists of their SSA function names.
         Defaults to an empty dictionary.
     callsites : dict[str, CallsiteModel], optional
         A mapping from SSA variable names to their corresponding
@@ -109,7 +108,7 @@ class CallsiteManagerModel(BaseModel):
         return all_unique_ssa_names
 
     def by_ssa_name(self, ssa_name: str) -> Optional[CallsiteModel]:
-        """Retrieve a call site model by its SSA variable name.
+        """Retrieve a call site model by its SSA function name.
 
         Parameters
         ----------

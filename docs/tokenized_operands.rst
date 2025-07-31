@@ -3,7 +3,7 @@
 Working with Tokenized Operands
 ===============================
 
-All variables and constants used inside a step orr instruction of a function are tokenized operands.  
+All variables and constants used inside a step or instruction of a function are tokenized operands.  
 
 By leveraging tokenized operands and their underlying tokens, you can perform precise, granular analysis of code structures, preserving all semantic and syntactic information necessary for comprehensive static analysis.
 
@@ -18,7 +18,7 @@ A tokenized operand can represent either:
 1. **Variables** (e.g. - ``p``), or  
 2. **Non-variables** (e.g. - constants like ``5`` or expressions like ``&`` in ``&c``).
 
-Consider the following step extracted from a function in the Eptalights API:
+Consider the following step extracted from a function in the Eptalights Sophia API:
 
 .. code-block:: python
 
@@ -48,7 +48,7 @@ To access the defined operands (on the left-hand side), you can use ``step.defin
 
 	# output
 	"""
-	operand=p, operand_type=<class 'eptalights.models.egimple.tokenized_operand.TokenizedOperandModel'>
+	operand=p, operand_type=<class 'eptalights_sophia.models.sophia_ir.tokenized_operand.TokenizedOperandModel'>
 	"""
 
 	# Alternatively:
@@ -56,7 +56,7 @@ To access the defined operands (on the left-hand side), you can use ``step.defin
 
 	# output
 	"""
-	operand=p, operand_type=<class 'eptalights.models.egimple.tokenized_operand.TokenizedOperandModel'>
+	operand=p, operand_type=<class 'eptalights_sophia.models.sophia_ir.tokenized_operand.TokenizedOperandModel'>
 	"""
 
 
@@ -235,11 +235,11 @@ Constant tokenized operands, such as string literals, are treated with the same 
 4. Token Structure and Key Attributes
 -------------------------------------
 
-Each token is an instance of the :class:`~eptalights.models.egimple.tokenized_operand.TokenModel`. Important fields include:
+Each token is an instance of the :class:`~eptalights_sophia.models.sophia_ir.tokenized_operand.TokenModel`. Important fields include:
 
 - **`value`**: The actual value of the token (e.g., ``&``, ``c_0``, ``p_4``). For variables, this holds the SSA version of the variable.
 - **`value_extended`**: The base name of the variable, without the SSA suffix (e.g., ``c``, ``p``).
-- **`token_type`**: The type of token, defined in :class:`~eptalights.models.egimple.enum_types.TokenType`. This can represent symbols, variables, constants, or attributes (in the case of structs).
+- **`token_type`**: The type of token, defined in :class:`~eptalights_sophia.models.sophia_ir.enum_types.TokenType`. This can represent symbols, variables, constants, or attributes (in the case of structs).
 - **`is_base_variable`**: A boolean indicating whether the token represents the main variable. This is particularly useful when dealing with nested variable references like ``main_var[another_var]``.
 - **`code_name`** and **`discovery_depth`**: These reflect GCC GIMPLE IR-specific properties and are primarily useful for debugging or advanced GIMPLE analysis.
 

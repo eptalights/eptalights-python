@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 from typing import List, Optional, Dict, Any
-from eptalights.models.egimple.enum_types import VarType
-from eptalights.models.egimple.tokenized_operand import TokenizedOperandModel
-from eptalights.core.printer import PrettyPrinter
+from eptalights_sophia.models.sophia_ir.enum_types import VarType
+from eptalights_sophia.models.sophia_ir.tokenized_operand import TokenizedOperandModel
+from eptalights_sophia.core.printer import PrettyPrinter
 
 
 class SSAVariableModel(BaseModel):
@@ -104,6 +104,10 @@ class VariableModel(BaseModel):
     additional_info: Dict[str, Any] = {}
 
     phi_ssa_variables: Dict[str, List[str]] = {}
+
+    @field_serializer("vartype", when_used="always")
+    def serialize_vartype(self, vartype: VarType):
+        return vartype.value
 
     @property
     def used_at_steps(self) -> List[int]:

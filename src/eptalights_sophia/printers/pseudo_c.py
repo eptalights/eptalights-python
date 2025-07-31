@@ -1,4 +1,4 @@
-from eptalights.printers.base import PrettyPrinterBase
+from eptalights_sophia.printers.base import PrettyPrinterBase
 import re
 
 from pygments import highlight
@@ -95,16 +95,16 @@ class PseudoCPrettyPrinter(PrettyPrinterBase):
                 return f"{obj.lhs.decompile()}"
 
     @classmethod
-    def print_egimple_ir_nop_model(cls, obj):
+    def print_sophia_ir_nop_model(cls, obj):
         return f"{DSPACE}nop;\n"
 
     @classmethod
-    def print_egimple_ir_assign_model(cls, obj):
+    def print_sophia_ir_assign_model(cls, obj):
         exp_str = obj.src.decompile()
         return f"{DSPACE}{obj.dst.decompile()} = {exp_str};\n"
 
     @classmethod
-    def print_egimple_ir_call_model(cls, obj):
+    def print_sophia_ir_call_model(cls, obj):
         fargs_str = " ( "
         for idx, arg in enumerate(obj.fargs):
             if idx == 0:
@@ -121,7 +121,7 @@ class PseudoCPrettyPrinter(PrettyPrinterBase):
             return f"{DSPACE}{simplify_demangled(obj.fname)} {fargs_str};\n"
 
     @classmethod
-    def print_egimple_ir_cond_model(cls, obj):
+    def print_sophia_ir_cond_model(cls, obj):
         exp_str = obj.src.decompile()
         return (
             f"{DSPACE}if ( {exp_str} )\n"
@@ -131,21 +131,21 @@ class PseudoCPrettyPrinter(PrettyPrinterBase):
         )
 
     @classmethod
-    def print_egimple_ir_return_model(cls, obj):
+    def print_sophia_ir_return_model(cls, obj):
         if obj.dst is not None:
             return f"{DSPACE}return {obj.dst.decompile()};\n"
         else:
             return f"{DSPACE}return;\n"
 
     @classmethod
-    def print_egimple_ir_goto_model(cls, obj):
+    def print_sophia_ir_goto_model(cls, obj):
         if obj.dst is not None:
             return f"{DSPACE}goto {obj.dst.decompile()};\n"
         else:
             return f"{DSPACE}goto <>;\n"
 
     @classmethod
-    def print_egimple_ir_switch_model(cls, obj):
+    def print_sophia_ir_switch_model(cls, obj):
         switch_str = f"{DSPACE}switch ( {obj.switch_index.decompile()} )\n"
 
         for i, case in enumerate(obj.switch_cases):
@@ -156,7 +156,7 @@ class PseudoCPrettyPrinter(PrettyPrinterBase):
         return switch_str
 
     @classmethod
-    def print_egimple_ir_label_model(cls, obj):
+    def print_sophia_ir_label_model(cls, obj):
         if obj.label is not None:
             return f"{DSPACE}label {obj.label.decompile()};\n"
         else:
@@ -182,11 +182,12 @@ class PseudoCPrettyPrinter(PrettyPrinterBase):
 
         fn_str = fn_str + fn_args_str + "\n{"
 
-        # for local_var in obj.variable_manager.local_variables:
-        #     if local_var not in obj.variable_manager.function_args:
-        #         fn_str += (
-        #             f"\n\t{obj.variable_manager.variables[local_var].decompile()} ;"
-        #         )
+        for local_var in obj.variable_manager.local_variables:
+            if local_var not in obj.variable_manager.function_args:
+                fn_str += (
+                    f"\n\t{obj.variable_manager.variables[local_var].decompile()} ;"
+                )
+        fn_str += "\n"
 
         # for tmp_var in obj.variable_manager.tmp_variables:
         #     fn_str += f"\n\t{obj.variable_manager.variables[tmp_var].decompile()} ;"
@@ -227,6 +228,8 @@ class PseudoCPrettyPrinter(PrettyPrinterBase):
                     tstr += cleaned_string
                 else:
                     tstr += format_r_string(cleaned_string)
+            elif t.token_type.value == "IS_TYPE":
+                tstr += f"{cleaned_string} "
             else:
                 tstr += cleaned_string
         return tstr
@@ -326,6 +329,8 @@ class PseudoCPrettyPrinter(PrettyPrinterBase):
     def print_variable_model(cls, obj):
         if obj.full_declaration is not None:
             return obj.full_declaration
+        elif obj.type_declaration is not None:
+            return f"{obj.type_declaration} {obj.name}"
         else:
             return f"[unnamed] {obj.name}"
 

@@ -55,7 +55,7 @@ When you disassembled this using **phpdbg** and inspect the **Zend Bytecode Inst
     ")
     L0010 0003 RETURN int(1)
 
-Using Eptalight's Lifter, the PHP bytecode instructions are lifted into a GIMPLE-like intermediate representation (IR), where call sites, functions, classes, control flow graphs (CFG), and variables are extracted and made easily accessible in a Pythonic way.
+Using Eptalight's Lifter, the PHP bytecode instructions are lifted into a SOPHIA-IR, where call sites, functions, classes, control flow graphs (CFG), and variables are extracted and made easily accessible in a Pythonic way.
 
 .. code-block:: python
 
