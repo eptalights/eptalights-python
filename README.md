@@ -6,7 +6,7 @@ Easily access functions, callsites, variables, control flow graphs (CFG), and ot
 
 ## Documentation
 
-For detailed documentation, please visit [Eptalights Sophia Documentation](https://sophia-python.readthedocs.io/en/latest/).
+For detailed documentation, please visit [Eptalights Sophia Documentation](https://eptalights-sophia.readthedocs.io/en/latest/).
 
 You can also check out this [blog post](https://eptalights.com/blog/01-introduction-to-eptalights-technology/) for an introduction to Eptalights's Sophia Technology.
 
@@ -14,9 +14,9 @@ You can also check out this [blog post](https://eptalights.com/blog/01-introduct
 
 Eptalights Sophia currently supports the following languages, with more on the way:
 
-- **C/C++** (via [GCC GIMPLE](https://github.com/eptalights/sophia-extractor-cxx))
-- **PHP** (via [JVM JIMPLE](https://github.com/eptalights/sophia-extractor-php))
-- **JAVA** (via [ZEND OPCODE](https://github.com/eptalights/sophia-extractor-java))
+- **C/C++** (via [sophia-extractor-cxx](https://github.com/eptalights/sophia-extractor-cxx))
+- **PHP** (via [sophia-extractor-php](https://github.com/eptalights/sophia-extractor-php))
+- **JAVA** (via [sophia-extractor-java](https://github.com/eptalights/sophia-extractor-java))
 
 ## Installation
 
@@ -54,7 +54,7 @@ black --check src tests
 ## Building Documentation
 
 We use the Sphinx framework. The documentation source files are in `docs/`.
-The public documentation is accessible at https://sophia-python.readthedocs.io.
+The public documentation is accessible at https://eptalights-sophia.readthedocs.io/en/latest/.
 The doc build is configured by `.readthedocs.yaml`. 
 
 To build the documentation locally (for testing and development),

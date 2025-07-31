@@ -35,7 +35,7 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = "https://eptalights-sophia.readthedocs.io"
+Documentation = "https://eptalights-sophia.readthedocs.io/en/latest/"
 Source = "https://github.com/eptalights/sophia-python"
 
 [project.scripts]
