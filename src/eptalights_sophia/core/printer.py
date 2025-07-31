@@ -1,6 +1,6 @@
-from eptalights.printers.pseudo_c import PseudoCPrettyPrinter
+from eptalights_sophia.printers.pseudo_c import PseudoCPrettyPrinter
 
-# from eptalights.printers.pseudo_c import PseudoCPrettyPrinterColored
+# from eptalights_sophia.printers.pseudo_c import PseudoCPrettyPrinterColored
 
 
 DEFAULT_PRETTY_PRINTER = "pseudo_c"
@@ -21,29 +21,29 @@ class PrettyPrinter:
             case "ExprModel":
                 return printer.print_expr_model(obj_instance)
 
-            case "EGimpleIRNopModel":
-                return printer.print_egimple_ir_nop_model(obj_instance)
+            case "SophiaIRNopModel":
+                return printer.print_sophia_ir_nop_model(obj_instance)
 
-            case "EGimpleIRAssignModel":
-                return printer.print_egimple_ir_assign_model(obj_instance)
+            case "SophiaIRAssignModel":
+                return printer.print_sophia_ir_assign_model(obj_instance)
 
-            case "EGimpleIRCallModel":
-                return printer.print_egimple_ir_call_model(obj_instance)
+            case "SophiaIRCallModel":
+                return printer.print_sophia_ir_call_model(obj_instance)
 
-            case "EGimpleIRCondModel":
-                return printer.print_egimple_ir_cond_model(obj_instance)
+            case "SophiaIRCondModel":
+                return printer.print_sophia_ir_cond_model(obj_instance)
 
-            case "EGimpleIRReturnModel":
-                return printer.print_egimple_ir_return_model(obj_instance)
+            case "SophiaIRReturnModel":
+                return printer.print_sophia_ir_return_model(obj_instance)
 
-            case "EGimpleIRGotoModel":
-                return printer.print_egimple_ir_goto_model(obj_instance)
+            case "SophiaIRGotoModel":
+                return printer.print_sophia_ir_goto_model(obj_instance)
 
-            case "EGimpleIRSwitchModel":
-                return printer.print_egimple_ir_switch_model(obj_instance)
+            case "SophiaIRSwitchModel":
+                return printer.print_sophia_ir_switch_model(obj_instance)
 
-            case "EGimpleIRLabelModel":
-                return printer.print_egimple_ir_label_model(obj_instance)
+            case "SophiaIRLabelModel":
+                return printer.print_sophia_ir_label_model(obj_instance)
 
             case "FunctionModel":
                 return printer.print_function_model(obj_instance)

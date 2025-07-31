@@ -3,9 +3,9 @@
 Working with Variables
 ======================
 
-Data model or structure for variables - :class:`~eptalights.models.egimple.variable.VariableManagerModel` :class:`~eptalights.models.egimple.variable.VariableModel` :class:`~eptalights.models.egimple.variable.SSAVariableModel`
+Everything concerning variables of a function is managed through the function's ``variable_manager`` which is a :class:`~eptalights_sophia.models.sophia_ir.variable.VariableManagerModel` data model.
 
-Everything concerning variables of a function is managed through the function's ``variable_manager`` which is a :class:`~eptalights.models.egimple.variable.VariableManagerModel` data model.
+Data model or structure for variables - :class:`~eptalights_sophia.models.sophia_ir.variable.VariableManagerModel` :class:`~eptalights_sophia.models.sophia_ir.variable.VariableModel` :class:`~eptalights_sophia.models.sophia_ir.variable.SSAVariableModel`
 
 
 1. print variable names in a function

@@ -3,7 +3,7 @@ requires = ["setuptools >= 69.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "eptalights-python"
+name = "eptalights-sophia-python"
 version = "0.0.1"
 description = "Eptalights python Library"
 readme = "README.md"
@@ -18,7 +18,12 @@ keywords = [
     "code-analysis",
     "program-analysis",
     "gimple",
-    "egimple",
+    "soot",
+    "zend",
+    "java",
+    "php",
+    "C++",
+    "sophia_ir",
     "eptalights",
 ]
 dependencies = [
@@ -26,17 +31,16 @@ dependencies = [
     "cxxfilt == 0.3.0",
     "SQLAlchemy == 2.0.36",
     "msgpack == 1.0.8",
+    "Pygments == 2.19.2",
 ]
 
 [project.urls]
-Documentation = "https://eptalights.readthedocs.io"
-Source = "https://github.com/eptalights/eptalights-python"
+Documentation = "https://eptalights-sophia.readthedocs.io"
+Source = "https://github.com/eptalights/sophia-python"
 
 [project.scripts]
-eptalights_build_callgraph = "eptalights.core.cmdtools:build_callgraph"
-eptalights_print_calltree = "eptalights.core.cmdtools:print_calltree"
-eptalights_fsearch = "eptalights.core.cmdtools:search_function"
-eptalights_decompile_all = "eptalights.core.cmdtools:decompile_all"
+sophia_fsearch = "eptalights_sophia.core.cmdtools:search_function"
+sophia_decompile_all = "eptalights_sophia.core.cmdtools:decompile_all"
 
 [project.optional-dependencies]
 dev = [

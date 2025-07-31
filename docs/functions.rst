@@ -3,7 +3,7 @@
 Working with Functions
 ======================
 
-Data model or structure for function - :class:`~eptalights.models.egimple.function.FunctionModel`
+Eptalights Sophia breaks everything down into functions, along with their related context-like the class they belong to and the file where they’re defined. This forms the core structure of the function-level data model. The Data model or structure for function - :class:`~eptalights_sophia.models.sophia_ir.function.FunctionModel`
 
 
 1. get total functions
@@ -18,22 +18,6 @@ Get total number of functions in database.
 	# output
 	"""
 	total_functions = 76937
-	"""
-
-
-Each Function comes a unique ID called ``fid``. The ``fid`` is named based on the file path, the function name and its function overloading count.
-
-.. code-block:: python
-
-	for fn in api.search_functions():
-	    print(f"fid={fn.fid}")
-
-	"""
-	fid=/example/src/07_array.cc:main#1
-	fid=/example/src/14_struct_arithmetic.cc:addNumbers#1
-	fid=/example/src/14_struct_arithmetic.cc:main#1
-	fid=/example/src/10_union.cc:main#1
-	fid=/example/src/03_scanf_to_malloc.cc:main#1
 	"""
 
 

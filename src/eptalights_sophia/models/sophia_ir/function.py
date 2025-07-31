@@ -1,15 +1,15 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, field_serializer
 from typing import List, Optional, Union, Dict
-from eptalights.models.egimple.tokenized_operand import TokenizedOperandModel
-from eptalights.models.egimple.cfg import ControlFlowGraphModel
-from eptalights.models.egimple.callsite import CallsiteManagerModel
-from eptalights.models.egimple.variable import VariableManagerModel
-from eptalights.models.egimple.enum_types import (
+from eptalights_sophia.models.sophia_ir.tokenized_operand import TokenizedOperandModel
+from eptalights_sophia.models.sophia_ir.cfg import ControlFlowGraphModel
+from eptalights_sophia.models.sophia_ir.callsite import CallsiteManagerModel
+from eptalights_sophia.models.sophia_ir.variable import VariableManagerModel
+from eptalights_sophia.models.sophia_ir.enum_types import (
     OpType,
     ExprType,
     TokenType,
 )
-from eptalights.core.printer import PrettyPrinter
+from eptalights_sophia.core.printer import PrettyPrinter
 
 
 class ExprModel(BaseModel):
@@ -30,6 +30,10 @@ class ExprModel(BaseModel):
     lhs: TokenizedOperandModel
     rhs: Optional[TokenizedOperandModel] = None
 
+    @field_serializer("expr_type", when_used="always")
+    def serialize_expr_type(self, expr_type: ExprType):
+        return expr_type.value
+
     def decompile(self):
         """Generate a human-readable or high-level representation.
 
@@ -41,8 +45,8 @@ class ExprModel(BaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRBaseModel(BaseModel):
-    """Represents a base model for the GIMPLE Intermediate Representation (IR).
+class SophiaIRBaseModel(BaseModel):
+    """Represents a base model for the SOPHIA (IR).
 
     Attributes
     ----------
@@ -119,8 +123,8 @@ class EGimpleIRBaseModel(BaseModel):
         raise NotImplementedError
 
 
-class EGimpleIRNopModel(EGimpleIRBaseModel):
-    """Represents a NOP (No Operation) instruction in the GIMPLE IR model.
+class SophiaIRNopModel(SophiaIRBaseModel):
+    """Represents a NOP (No Operation) instruction in the SOPHIA IR model.
 
     Attributes
     ----------
@@ -130,6 +134,10 @@ class EGimpleIRNopModel(EGimpleIRBaseModel):
 
     op: OpType = OpType.NOP
 
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
+
     def update_variables_defined_and_used_here(self):
         """Update the variables defined and used in this NOP instruction.
 
@@ -150,25 +158,29 @@ class EGimpleIRNopModel(EGimpleIRBaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRLabelModel(EGimpleIRBaseModel):
-    """Represents a NOP (No Operation) instruction in the GIMPLE IR model.
+class SophiaIRLabelModel(SophiaIRBaseModel):
+    """Represents a Label (LABEL Operation) instruction in the SOPHIA IR model.
 
     Attributes
     ----------
     op : OpType, optional
-        The operation type associated with this instruction. Defaults to `OpType.NOP`.
+        The operation type associated with this instruction. Defaults to `OpType.LABEL`.
     """
 
     op: OpType = OpType.LABEL
     label: Optional[TokenizedOperandModel] = None
     label_name: str
 
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
+
     def update_variables_defined_and_used_here(self):
-        """Update the variables defined and used in this NOP instruction.
+        """Update the variables defined and used in this LABEL instruction.
 
         This method is currently a placeholder and does not modify any state.
         It is intended to be overridden or extended in future implementations
-        to handle variable tracking specific to NOP operations.
+        to handle variable tracking specific to LABEL operations.
         """
         pass
 
@@ -183,8 +195,8 @@ class EGimpleIRLabelModel(EGimpleIRBaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRAssignModel(EGimpleIRBaseModel):
-    """Represents an assignment operation in the EGimple IR.
+class SophiaIRAssignModel(SophiaIRBaseModel):
+    """Represents an assignment operation in the SOPHIA IR.
 
     Attributes
     ----------
@@ -199,6 +211,10 @@ class EGimpleIRAssignModel(EGimpleIRBaseModel):
     op: OpType = OpType.ASSIGN
     src: ExprModel
     dst: TokenizedOperandModel
+
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
 
     @property
     def defined_tokenized_operands(self) -> List[TokenizedOperandModel]:
@@ -275,8 +291,8 @@ class EGimpleIRAssignModel(EGimpleIRBaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRCallModel(EGimpleIRBaseModel):
-    """Represents a function call operation in the GIMPLE IR.
+class SophiaIRCallModel(SophiaIRBaseModel):
+    """Represents a function call operation in the SOPHIA IR.
 
     Attributes
     ----------
@@ -284,6 +300,9 @@ class EGimpleIRCallModel(EGimpleIRBaseModel):
         The operation type, which is always set to `OpType.CALL`.
     fname : str
         The name of the function being called.
+    fname_tokenized : Optional[TokenizedOperandModel], optional
+        A tokenized representation of the function name, if available.
+        Defaults to `None`.
     finfo : Optional[str], optional
         Additional function information, if available. Defaults to `None`.
     fargs : List[TokenizedOperandModel], optional
@@ -296,9 +315,14 @@ class EGimpleIRCallModel(EGimpleIRBaseModel):
 
     op: OpType = OpType.CALL
     fname: str
+    fname_tokenized: Optional[TokenizedOperandModel] = None
     finfo: Optional[str] = None
     fargs: List[TokenizedOperandModel] = []
     dst: Optional[TokenizedOperandModel] = None
+
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
 
     @property
     def defined_tokenized_operands(self) -> List[TokenizedOperandModel]:
@@ -321,7 +345,13 @@ class EGimpleIRCallModel(EGimpleIRBaseModel):
             A list of operands used in the function call, filtering only those
             that represent variables.
         """
-        return [operand for operand in self.fargs]
+        to_list = [operand for operand in self.fargs]
+        if self.fname_tokenized is not None:
+            for tk in self.fname_tokenized.tokens:
+                if tk.token_type == TokenType.IS_VARIABLE:
+                    to_list.append(self.fname_tokenized)
+                    break
+        return to_list
 
     def update_operand_step_index(self) -> None:
         """Update the step index of all function arguments to match the
@@ -329,6 +359,9 @@ class EGimpleIRCallModel(EGimpleIRBaseModel):
         """
         for operand in self.fargs:
             operand.step_index = self.step_index
+
+        if self.fname_tokenized is not None:
+            self.fname_tokenized.step_index = self.step_index
 
     def update_variables_defined_and_used_here(self) -> None:
         """Update the lists of defined and used SSA variables based on
@@ -357,6 +390,13 @@ class EGimpleIRCallModel(EGimpleIRBaseModel):
                         self.ssa_variables_used_here.append(token.value)
                         self.variables_used_here.append(token.value_extended)
 
+        if self.fname_tokenized is not None:
+            for token in self.fname_tokenized.tokens:
+                if token.token_type == TokenType.IS_VARIABLE:
+                    if token.value not in self.ssa_variables_used_here:
+                        self.ssa_variables_used_here.append(token.value)
+                        self.variables_used_here.append(token.value_extended)
+
     def decompile(self):
         """Generate a human-readable or high-level representation.
 
@@ -368,8 +408,8 @@ class EGimpleIRCallModel(EGimpleIRBaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRCondModel(EGimpleIRBaseModel):
-    """Represents a conditional expression in the GIMPLE intermediate representation.
+class SophiaIRCondModel(SophiaIRBaseModel):
+    """Represents a conditional expression in the SOPHIA IR.
 
     Attributes
     ----------
@@ -389,6 +429,10 @@ class EGimpleIRCondModel(EGimpleIRBaseModel):
     src: ExprModel
     true_dst_block_index: Optional[int] = None
     false_dst_block_index: Optional[int] = None
+
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
 
     @property
     def defined_tokenized_operands(self) -> list:
@@ -455,8 +499,8 @@ class EGimpleIRCondModel(EGimpleIRBaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRReturnModel(EGimpleIRBaseModel):
-    """Represents a RETURN operation in the GIMPLE IR.
+class SophiaIRReturnModel(SophiaIRBaseModel):
+    """Represents a RETURN operation in the SOPHIA IR.
 
     Attributes
     ----------
@@ -469,6 +513,10 @@ class EGimpleIRReturnModel(EGimpleIRBaseModel):
 
     op: OpType = OpType.RETURN
     dst: Optional[TokenizedOperandModel] = None
+
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
 
     @property
     def defined_tokenized_operands(self):
@@ -522,8 +570,8 @@ class EGimpleIRReturnModel(EGimpleIRBaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRGotoModel(EGimpleIRBaseModel):
-    """Represents a GIMPLE IR 'goto' statement within an intermediate representation.
+class SophiaIRGotoModel(SophiaIRBaseModel):
+    """Represents a SOPHIA IR 'goto' statement.
 
     Attributes
     ----------
@@ -550,6 +598,10 @@ class EGimpleIRGotoModel(EGimpleIRBaseModel):
     dst: Optional[TokenizedOperandModel] = None
     goto_label_names: List[str] = []
     goto_basic_blocks: List[int] = []
+
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
 
     @property
     def defined_tokenized_operands(self) -> list:
@@ -601,8 +653,8 @@ class EGimpleIRGotoModel(EGimpleIRBaseModel):
         return PrettyPrinter.decompile(self)
 
 
-class EGimpleIRSwitchModel(EGimpleIRBaseModel):
-    """Represents a SWITCH operation in the GIMPLE IR model.
+class SophiaIRSwitchModel(SophiaIRBaseModel):
+    """Represents a SWITCH operation in the SOPHIA IR model.
 
     Attributes
     ----------
@@ -626,6 +678,10 @@ class EGimpleIRSwitchModel(EGimpleIRBaseModel):
     switch_cases: Optional[List[TokenizedOperandModel]] = []
     switch_label_names: Optional[List[str]] = []
     switch_basic_blocks: Optional[List[int]] = []
+
+    @field_serializer("op", when_used="always")
+    def serialize_op(self, op: OpType):
+        return op.value
 
     @property
     def defined_tokenized_operands(self) -> List[TokenizedOperandModel]:
@@ -688,10 +744,12 @@ class EGimpleIRSwitchModel(EGimpleIRBaseModel):
 
 
 class FunctionModel(BaseModel):
-    """Represents a function within a program analysis context.
+    """
+    Represents a function within a program analysis context.
 
     Attributes
     ----------
+
     fid : str
         A unique identifier for the function.
     name : str
@@ -713,10 +771,10 @@ class FunctionModel(BaseModel):
     cfg : Optional[ControlFlowGraphModel], optional
         The control flow graph representing the function’s execution flow.
         Defaults to an empty `ControlFlowGraphModel`.
-    steps : List[Union[EGimpleIRNopModel, EGimpleIRLabelModel,
-                       EGimpleIRAssignModel, EGimpleIRCallModel,
-                       EGimpleIRCondModel, EGimpleIRReturnModel,
-                       EGimpleIRGotoModel, EGimpleIRSwitchModel]], optional
+    steps : List[Union[SophiaIRNopModel, SophiaIRLabelModel,
+                       SophiaIRAssignModel, SophiaIRCallModel,
+                       SophiaIRCondModel, SophiaIRReturnModel,
+                       SophiaIRGotoModel, SophiaIRSwitchModel]]
         A list of steps representing the function’s operations in the
         intermediate representation (IR). Each step corresponds to an operation
         such as assignment, call, condition, return, etc. Defaults to an empty list.
@@ -735,14 +793,14 @@ class FunctionModel(BaseModel):
 
     steps: List[
         Union[
-            EGimpleIRNopModel,
-            EGimpleIRLabelModel,
-            EGimpleIRAssignModel,
-            EGimpleIRCallModel,
-            EGimpleIRCondModel,
-            EGimpleIRReturnModel,
-            EGimpleIRGotoModel,
-            EGimpleIRSwitchModel,
+            SophiaIRNopModel,
+            SophiaIRLabelModel,
+            SophiaIRAssignModel,
+            SophiaIRCallModel,
+            SophiaIRCondModel,
+            SophiaIRReturnModel,
+            SophiaIRGotoModel,
+            SophiaIRSwitchModel,
         ]
     ] = []
 
@@ -771,21 +829,21 @@ class FunctionModel(BaseModel):
             if not isinstance(step, dict):
                 step = step.model_dump()
             if step["op"] == OpType.NOP.value:
-                update_steps.append(EGimpleIRNopModel(**step))
+                update_steps.append(SophiaIRNopModel(**step))
             elif step["op"] == OpType.LABEL.value:
-                update_steps.append(EGimpleIRLabelModel(**step))
+                update_steps.append(SophiaIRLabelModel(**step))
             elif step["op"] == OpType.ASSIGN.value:
-                update_steps.append(EGimpleIRAssignModel(**step))
+                update_steps.append(SophiaIRAssignModel(**step))
             elif step["op"] == OpType.CALL.value:
-                update_steps.append(EGimpleIRCallModel(**step))
+                update_steps.append(SophiaIRCallModel(**step))
             elif step["op"] == OpType.RETURN.value:
-                update_steps.append(EGimpleIRReturnModel(**step))
+                update_steps.append(SophiaIRReturnModel(**step))
             elif step["op"] == OpType.COND.value:
-                update_steps.append(EGimpleIRCondModel(**step))
+                update_steps.append(SophiaIRCondModel(**step))
             elif step["op"] == OpType.GOTO.value:
-                update_steps.append(EGimpleIRGotoModel(**step))
+                update_steps.append(SophiaIRGotoModel(**step))
             elif step["op"] == OpType.SWITCH.value:
-                update_steps.append(EGimpleIRSwitchModel(**step))
+                update_steps.append(SophiaIRSwitchModel(**step))
             else:
                 raise Exception("Unknown operation type encountered in steps.")
         return update_steps

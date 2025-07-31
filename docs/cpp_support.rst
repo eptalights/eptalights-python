@@ -42,7 +42,7 @@ When you compile this using **GCC** and inspect the **GIMPLE IR** (GCC’s inter
 - **GIMPLE IR Simplifies C++ Constructs:**  
   Even complex C++ features like operator overloading get reduced to basic function calls, which can be analyzed systematically.
 
-Using the **`eptalights`** library, we can convert and decompile this GIMPLE IR into a **pseudo-C-like code** to easily understand what's happening.
+Using the **`eptalights sophia`** library, we can convert and decompile this GIMPLE IR into a **pseudo-C-like code** to easily understand what's happening.
 
 .. code-block:: python
 
@@ -406,7 +406,7 @@ To clarify, the above can be simplified into the following Pseudo-C code:
 	*$T1 = 1;
 
 
-Now, let's see how to extract all keys from the map using eptalights.
+Now, let's see how to extract all keys from the map using eptalights sophia.
 
 .. code-block:: python
 
@@ -490,7 +490,7 @@ Now, let's see how to extract all keys from the map using eptalights.
    - The key is created using ``basic_string``, and its value is stored in a temporary variable.
    - The value is then assigned to the map using the pointer returned from ``operator[]``.
 
-3. **Extracting Keys and Values with eptalights:**
+3. **Extracting Keys and Values with eptalights sophia:**
    - By identifying ``operator[]`` callsites and tracing their arguments, we can retrieve all the keys inserted into the map.
 
 
@@ -499,7 +499,7 @@ Now, let's see how to extract all keys from the map using eptalights.
 
 Function overloading allows multiple functions to have the same name but differ in **argument types** or **number of parameters**.
 
-In **Eptalights**, overloaded functions are uniquely identified by their **function IDs (fid)**.
+In **Eptalights sophia**, overloaded functions are uniquely identified by their **function IDs (fid)**.
 
 To identify overloaded functions, we can list all functions in a file and observe multiple entries for the same function name but with different identifiers (``#1``, ``#2``, ``#3``, etc.).
 
@@ -600,7 +600,7 @@ Even though ``Geeks::func#1`` and ``Geeks::func#2`` have the same number of argu
 - **`Geeks::func#2`** accepts a **double** argument.
 
 1. **Unique Identification:**  
-   In Eptalights IR, each overloaded function is uniquely identified by its ``fid``, such as ``Geeks::func#1``, ``Geeks::func#2``, etc.
+   In Eptalights SophiaIR, each overloaded function is uniquely identified by its ``fid``, such as ``Geeks::func#1``, ``Geeks::func#2``, etc.
 
 2. **Differentiation Criteria:**  
    Overloaded functions differ by:

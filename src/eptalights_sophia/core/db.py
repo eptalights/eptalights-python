@@ -12,7 +12,7 @@ from sqlalchemy import select, func
 
 import msgpack
 
-from eptalights import models
+from eptalights_sophia import models
 
 
 class Base(DeclarativeBase):

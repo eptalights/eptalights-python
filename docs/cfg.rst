@@ -3,7 +3,7 @@
 Working with Control Flow Graph (CFG)
 =====================================
 
-Data model or structure for CFG - :class:`~eptalights.models.egimple.callsite.ControlFlowGraphModel` 
+Data model or structure for CFG - :class:`~eptalights_sophia.models.sophia_ir.cfg.ControlFlowGraphModel` 
 
 
 1. print Control Flow Graph (CFG) structure

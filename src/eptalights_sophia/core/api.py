@@ -1,5 +1,5 @@
-from eptalights.core.db import DatabaseAPI
-from eptalights.core.loader import LoaderAPI
+from eptalights_sophia.core.db import DatabaseAPI
+from eptalights_sophia.core.loader import LoaderAPI
 
 
 class LocalAPI(DatabaseAPI, LoaderAPI):

@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 import pathlib
-import eptalights
+import eptalights_sophia
 
 logging.basicConfig(level=logging.DEBUG)
 _LOG = logging.getLogger(__name__)
@@ -10,11 +10,11 @@ _LOG = logging.getLogger(__name__)
 
 def search_function():
     parser = argparse.ArgumentParser(description="search function by name or filename")
-    parser.add_argument("-p", "--project", required=False, default="./eptalights.toml")
+    parser.add_argument("-p", "--project", required=False, default="./sophia_ir.toml")
     parser.add_argument("-q", "--query", required=True)
     args = parser.parse_args()
 
-    api = eptalights.LocalAPI(args.project)
+    api = eptalights_sophia.LocalAPI(args.project)
 
     if not pathlib.Path(api.config.database_path).exists():
         raise Exception(f"transformed_output not found - {api.database_path}")
@@ -25,16 +25,16 @@ def search_function():
 
 def decompile_all():
     parser = argparse.ArgumentParser(description="search function by name or filename")
-    parser.add_argument("-p", "--project", required=False, default="./eptalights.toml")
+    parser.add_argument("-p", "--project", required=False, default="./sophia_ir.toml")
     parser.add_argument(
         "-d",
         "--decompiled_path",
         required=False,
-        default="./__eptalights_decompiled_code/",
+        default="./__sophia_decompiled_code/",
     )
     args = parser.parse_args()
 
-    api = eptalights.LocalAPI(args.project)
+    api = eptalights_sophia.LocalAPI(args.project)
 
     if not pathlib.Path(api.config.local_database_path).exists():
         raise Exception(f"transformed_output not found - {api.local_database_path}")

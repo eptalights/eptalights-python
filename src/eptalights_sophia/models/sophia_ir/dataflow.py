@@ -1,8 +1,8 @@
 from typing import List, Optional, Union, Callable
 from pydantic import BaseModel
 from enum import auto
-from eptalights.models.egimple.enum_types import AutoStrEnum, OpType
-from eptalights.models.egimple import function as function_model
+from eptalights_sophia.models.sophia_ir.enum_types import AutoStrEnum, OpType
+from eptalights_sophia.models.sophia_ir import function as function_model
 
 
 class SinkResultType(AutoStrEnum):
@@ -50,6 +50,8 @@ class DataflowEventModel(BaseModel):
         The SSA version number of the variable.
     data_direction : str, optional
         The direction of data flow (e.g., "read" or "write"). Defaults to None.
+    var_depth_pos : int
+        Internal property for debugging variable position.
     step_index : int
         The step index of the program execution where this event occurs.
     record_attributes_defined_here : List[str], optional
@@ -61,6 +63,8 @@ class DataflowEventModel(BaseModel):
     used_inside_other_tokenized_operand_tokens_here : bool, optional
         Indicates whether this variable is used inside other tokenized operand tokens.
         Defaults to False.
+    current_record_attibute_tracked : str, optional
+        Current record attribute being tracked. Defaults to None.
     """
 
     op: OpType
@@ -74,6 +78,7 @@ class DataflowEventModel(BaseModel):
     record_attributes_defined_here: Optional[List[str]] = []
     record_attributes_used_here: Optional[List[str]] = []
     used_inside_other_tokenized_operand_tokens_here: bool = False
+    current_record_attibute_tracked: Optional[str] = None
 
 
 class DataflowStateModel(BaseModel):
@@ -86,15 +91,15 @@ class DataflowStateModel(BaseModel):
     current_function : FunctionModel
         The function in which the current event is occurring.
     current_step : Union[
-        function_model.EGimpleIRNopModel,
-        function_model.EGimpleIRAssignModel,
-        function_model.EGimpleIRCallModel,
-        function_model.EGimpleIRCondModel,
-        function_model.EGimpleIRReturnModel,
-        function_model.EGimpleIRGotoModel,
-        function_model.EGimpleIRSwitchModel
+        function_model.SophiaIRNopModel,
+        function_model.SophiaIRAssignModel,
+        function_model.SophiaIRCallModel,
+        function_model.SophiaIRCondModel,
+        function_model.SophiaIRReturnModel,
+        function_model.SophiaIRGotoModel,
+        function_model.SophiaIRSwitchModel
     ]
-        The current step in the execution, represented by one of the EGIMPLE IR models.
+        The current step in the execution, represented by one of the SOPHIA IR models.
     previous_events : List[DataflowEventModel], optional
         A list of previous data flow events leading up to the current state.
         Defaults to an empty list.
@@ -103,13 +108,13 @@ class DataflowStateModel(BaseModel):
     current_event: DataflowEventModel
     current_function: function_model.FunctionModel
     current_step: Union[
-        function_model.EGimpleIRNopModel,
-        function_model.EGimpleIRAssignModel,
-        function_model.EGimpleIRCallModel,
-        function_model.EGimpleIRCondModel,
-        function_model.EGimpleIRReturnModel,
-        function_model.EGimpleIRGotoModel,
-        function_model.EGimpleIRSwitchModel,
+        function_model.SophiaIRNopModel,
+        function_model.SophiaIRAssignModel,
+        function_model.SophiaIRCallModel,
+        function_model.SophiaIRCondModel,
+        function_model.SophiaIRReturnModel,
+        function_model.SophiaIRGotoModel,
+        function_model.SophiaIRSwitchModel,
     ]
     previous_events: List[DataflowEventModel] = []
 
@@ -148,17 +153,18 @@ class DataflowRequestModel(BaseModel):
         A function that processes a `DataflowStateModel` and returns a `SinkResultType`.
         This function represents the sink in the data flow analysis.
 
-        Example
-        -------
-        ```
-        def reachability_to_malloc_sink(state: DataflowStateModel) -> SinkResultType:
-            if (
-                state.current_event.op == models.OpType.CALL
-                and state.current_step.fname == "malloc"
-            ):
-                return models.SinkResultType.OK
-            return models.SinkResultType.CONTINUE
-        ```
+        Example::
+
+            def reachability_to_malloc_sink(
+                state: DataflowStateModel
+            ) -> SinkResultType:
+                if (
+                    state.current_event.op == models.OpType.CALL
+                    and state.current_step.fname == "malloc"
+                ):
+                    return models.SinkResultType.OK
+                return models.SinkResultType.CONTINUE
+
     function : FunctionModel
         The function model representing the target function for data flow analysis.
     timeout_secs : int, optional
@@ -168,32 +174,32 @@ class DataflowRequestModel(BaseModel):
         If True, strictly tracks data within complex records or variables,
         following only specific attributes rather than the base variable.
 
-        Example
-        -------
-        Given the following code:
-        ```
-        a.attr = 10
-        x = a
-        print(a.something_else)
-        ```
-        If `strict_record_attributes_tracking` is False, the data flow path will
-        include `print(a.something_else)`, since it tracks `a` as a whole.
+        Example::
 
-        However, if `strict_record_attributes_tracking` is True, the data flow
-        path will **not** include `print(a.something_else)`, as it focuses only
-        on `a.attr`.
+            # Given the following code:
 
-        Another case:
-        ```
-        a.attr = 10
-        x = a
-        print(a.attr)
-        ```
-        Here, the `print(a.attr)` statement **will** be included in the data
-        flow path, as it matches the tracked attribute.
+            a.attr = 10
+            x = a
+            print(a.something_else)
 
-        Using strict attribute tracking is encouraged for accuracy, unless
-        attributes cause side effects or a different behavior is required.
+            # If `strict_record_attributes_tracking` is False, the data flow path will
+            # include `print(a.something_else)`, since it tracks `a` as a whole.
+
+            # However, if `strict_record_attributes_tracking` is True, the data flow
+            # path will **not** include `print(a.something_else)`, as it focuses only
+            # on `a.attr`.
+
+            # Another case:
+
+            a.attr = 10
+            x = a
+            print(a.attr)
+
+            # Here, the `print(a.attr)` statement **will** be included in the data
+            # flow path, as it matches the tracked attribute.
+
+            # Using strict attribute tracking is encouraged for accuracy, unless
+            # attributes cause side effects or a different behavior is required.
     """
 
     function: function_model.FunctionModel

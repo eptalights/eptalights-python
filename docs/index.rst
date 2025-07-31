@@ -3,10 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-eptalights documentation
+eptalights sophia documentation
 ===============================
 
-The **Eptalights Python Library** is a powerful Python package designed to help hackers, researchers, and developers effortlessly perform code analysis, discover bugs, conduct variant analysis, and more.
+The **Eptalights Sophia Library** is a powerful Python package designed to help hackers, researchers, and developers effortlessly perform code analysis, discover bugs, conduct variant analysis, and more.
 
 Effortlessly analyze program structures, functions, and call sites, and save time by quickly identifying complex variables with support for SSA variables, control flow graphs (CFGs), and more in a simple, Pythonic way. Think of it as Binary Ninja, but for source code.
 
@@ -24,7 +24,8 @@ For more details on setting up, see :ref:`started`.
 Links
 =====
 
-* `Introducing Eptalights Technology Blog post <https://eptalights.com/blog/01-introduction-to-eptalights-technology>`_ 
+* `Introducing Eptalights Sophia Technology Blog post <https://eptalights.com/blog/01-introduction-to-eptalights-technology>`_ 
+* `Eptalights Sophia Product Page <https://eptalights.com/products/sophia>`_ 
 * `Eptalights Website <https://eptalights.com/>`_ 
 
 
@@ -32,7 +33,7 @@ Links
    :maxdepth: 3
    :caption: Table of Contents
    :glob:
-   
+
    quickstart
    started
    functions
