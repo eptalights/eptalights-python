@@ -1,7 +1,7 @@
 .. _php_support:
 
-Working with PHP Data Types
-===========================
+Working with PHP
+================
 
 Our approach to code analysis for PHP is completely different from existing tools, which primarily focus on the Abstract Syntax Tree (AST). In contrast, we analyze PHP from the bytecode level.
 

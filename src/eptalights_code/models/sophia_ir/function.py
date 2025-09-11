@@ -1,15 +1,15 @@
 from pydantic import BaseModel, validator, field_serializer
 from typing import List, Optional, Union, Dict
-from eptalights_sophia.models.sophia_ir.tokenized_operand import TokenizedOperandModel
-from eptalights_sophia.models.sophia_ir.cfg import ControlFlowGraphModel
-from eptalights_sophia.models.sophia_ir.callsite import CallsiteManagerModel
-from eptalights_sophia.models.sophia_ir.variable import VariableManagerModel
-from eptalights_sophia.models.sophia_ir.enum_types import (
+from eptalights_code.models.sophia_ir.tokenized_operand import TokenizedOperandModel
+from eptalights_code.models.sophia_ir.cfg import ControlFlowGraphModel
+from eptalights_code.models.sophia_ir.callsite import CallsiteManagerModel
+from eptalights_code.models.sophia_ir.variable import VariableManagerModel
+from eptalights_code.models.sophia_ir.enum_types import (
     OpType,
     ExprType,
     TokenType,
 )
-from eptalights_sophia.core.printer import PrettyPrinter
+from eptalights_code.core.printer import PrettyPrinter
 
 
 class ExprModel(BaseModel):

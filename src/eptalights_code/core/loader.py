@@ -5,7 +5,7 @@ import msgpack
 import json
 from typing import Any
 
-from eptalights_sophia.models import (
+from eptalights_code.models import (
     ConfigModel,
     BasicGimpleFunctionModel,
     BasicOpcodeFunctionModel,

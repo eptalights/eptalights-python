@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from eptalights_sophia.core.printer import PrettyPrinter
+from eptalights_code.core.printer import PrettyPrinter
 
 
 class AutoStrEnum(str, Enum):
@@ -10,7 +10,7 @@ class AutoStrEnum(str, Enum):
         return name
 
 
-class VarType(Enum):
+class VarType(AutoStrEnum):
     """Represents the type of a variable in program analysis.
 
     Attributes
@@ -39,7 +39,7 @@ class VarType(Enum):
         return self.name
 
 
-class TokenType(Enum):
+class TokenType(AutoStrEnum):
     """
     An enumeration representing the token type of an element.
 
@@ -116,7 +116,7 @@ class TokenType(Enum):
         return f"{self.name}"
 
 
-class OpType(Enum):
+class OpType(AutoStrEnum):
     """
     Enumeration of operation types.
 
@@ -162,7 +162,7 @@ class OpType(Enum):
         return f"{self.name}"
 
 
-class ExprType(Enum):
+class ExprType(AutoStrEnum):
     """
     Numeration of expression types.
 
@@ -326,3 +326,30 @@ class ExprType(Enum):
             A string representation of the expression.
         """
         return PrettyPrinter.decompile(self)
+
+
+class DataflowActionStatusType(AutoStrEnum):
+    """
+    Represents the lifecycle status of data in the dataflow process.
+
+    Attributes
+    ----------
+    LOCAL_PENDING
+        Data is stored locally and waiting to be sent to the API.
+    QUEUED
+        Data has been received by the server and is queued for processing.
+    PROCESSING
+        Data is currently being processed by the server.
+    DONE
+        Data has been fully processed and the workflow is complete.
+    UNDEF
+        Undefined status, used as a fallback or error state.
+    """
+
+    LOCAL_PENDING = auto()
+    REMOTE_PROCESSING = auto()
+    DONE = auto()
+
+    def __str__(self) -> str:
+        """Returns the string representation of the enumeration value."""
+        return self.name

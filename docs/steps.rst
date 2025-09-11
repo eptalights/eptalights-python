@@ -10,7 +10,7 @@ There are only seven types of operations, making analysis easier by avoiding the
 
 Steps are essentially instructions or individual IR code statements. All steps have unique identifier called ``step_index``.
 
-Data model or structure for steps - :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRNopModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRAssignModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRCallModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRCondModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRReturnModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRGotoModel` :class:`~eptalights_sophia.models.sophia_ir.function.SophiaIRSwitchModel`
+Data model or structure for steps - :class:`~eptalights_code.models.sophia_ir.function.SophiaIRNopModel` :class:`~eptalights_code.models.sophia_ir.function.SophiaIRAssignModel` :class:`~eptalights_code.models.sophia_ir.function.SophiaIRCallModel` :class:`~eptalights_code.models.sophia_ir.function.SophiaIRCondModel` :class:`~eptalights_code.models.sophia_ir.function.SophiaIRReturnModel` :class:`~eptalights_code.models.sophia_ir.function.SophiaIRGotoModel` :class:`~eptalights_code.models.sophia_ir.function.SophiaIRSwitchModel`
 
 
 1. print OP type and Pseudo-C code of steps

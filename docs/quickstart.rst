@@ -3,7 +3,7 @@
 Quickstart
 ==========
 
-Eptalights technology operates in three forms:
+Eptalights code analysis technology operates in three forms:
 
 1. Extract bytecode or IR data from source code.  
 2. Convert the extracted bytecode/IR into clean, Pythonic instructions using our cloud-based lifter.
@@ -11,7 +11,7 @@ Eptalights technology operates in three forms:
 
 If you already have the database and configuration, you can proceed. However, if this is new to you, you can find more details above. Visit :ref:`started`.   
 
-If you want to quickly try it out, you can use our sample project, which includes preloaded database files, available here: `Example Projects <https://github.com/eptalights/sophia-python-examples>`_.
+If you want to quickly try it out, you can use our sample project, which includes preloaded database files, available here: `Example Projects <https://github.com/eptalights/eptalights-code-python-examples>`_.
 
 
 1. Setting up Locally
@@ -23,11 +23,11 @@ If you want to quickly try it out, you can use our sample project, which include
 	python -m venv venv
 	. venv/bin/activate
 
-	# install sophia-python library
-	pip install git+https://github.com/eptalights/sophia-python.git
+	# install eptalights-code-python library
+	pip install git+https://github.com/eptalights/eptalights-code-python.git
 
-	# change directory where `sophia_ir.db` and `sophia_ir.toml` are located
-	# or update the `sophia_ir.toml` to point to where these files reside.
+	# change directory where `eptalights_code.db` and `eptalights_code.toml` are located
+	# or update the `eptalights_code.toml` to point to where these files reside.
 	cd /path/to/project
 
 	# go to step 2
@@ -40,8 +40,8 @@ You can either create a python test file in the directory or enter python REPL.
 
 .. code-block:: python
 
-	import eptalights_sophia
-	api = eptalights_sophia.LocalAPI("./sophia_ir.toml")
+	import eptalights_code
+	api = eptalights_code.LocalAPI("./eptalights_code.toml")
 
 	for fn in api.search_functions():
 	    print(fn.name)

@@ -1,28 +1,28 @@
 # Contributing
 
-Thank you for your interest in contributing to the `eptalights-python` codebase!
+Thank you for your interest in contributing to the `eptalights-code-python` codebase!
 
-If you would like to add or update a feature in `eptalights-python`,
+If you would like to add or update a feature in `eptalights-code-python`,
 it is recommended that you first file a GitHub issue to discuss your proposed changes
 and check their compatibility with the rest of the package before making a pull request.
 
-This page assumes that you have already created a fork of the `eptalights-python`
+This page assumes that you have already created a fork of the `eptalights-code-python`
 repository under your GitHub account and
 have the codebase available locally for development work. 
 
 ## Working on a Feature or Bug Fix
 
 The development steps below assume that your local Git repo has a remote
-`upstream` link to `eptalights/eptalights-python`:
+`upstream` link to `eptalights/eptalights-code-python`:
    
 ```bash
-git remote add upstream https://github.com/eptalights/eptalights-python.git
+git remote add upstream https://github.com/eptalights/eptalights-code-python.git
 ```
 
 After this step (which you only have to do once),
 running `git remote -v` should show your local Git repo
-has links to both "origin" (pointing to your fork `<your-github-username>/eptalights-python`)
-and "upstream" (pointing to `eptalights/eptalights-python`).
+has links to both "origin" (pointing to your fork `<your-github-username>/eptalights-code-python`)
+and "upstream" (pointing to `eptalights/eptalights-code-python`).
 
 To work on a feature or bug fix:
 
@@ -51,12 +51,12 @@ To work on a feature or bug fix:
    git push origin new-branch-name
    ```
    
-5. Go to your fork `https://github.com/<your-github-username>/eptalights-python` and
-   create a pull request off of your branch against the `eptalights/eptalights-python` repo.
+5. Go to your fork `https://github.com/<your-github-username>/eptalights-code-python` and
+   create a pull request off of your branch against the `eptalights/eptalights-code-python` repo.
 
 ## Running Tests and Code Style Checks
 
-The `eptalights-python` repo has continuous integration (CI) turned on,
+The `eptalights-code-python` repo has continuous integration (CI) turned on,
 with autobuilds running pytest
 (for the test suite in [`tests/`](tests))
 as well as `black` and `flake8` for consistent code styling.

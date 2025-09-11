@@ -1,8 +1,12 @@
 from typing import List, Optional, Union, Callable
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from enum import auto
-from eptalights_sophia.models.sophia_ir.enum_types import AutoStrEnum, OpType
-from eptalights_sophia.models.sophia_ir import function as function_model
+from eptalights_code.models.sophia_ir.enum_types import (
+    AutoStrEnum,
+    OpType,
+    DataflowActionStatusType,
+)
+from eptalights_code.models.sophia_ir import function as function_model
 
 
 class SinkResultType(AutoStrEnum):
@@ -228,3 +232,30 @@ class DataflowResponseModel(BaseModel):
     status: bool
     paths: List[DataflowPathModel] = []
     error_message: Optional[str] = None
+
+
+class DataflowActionModel(BaseModel):
+    """
+    Represents the model for a dataflow action request and its response.
+
+    Attributes
+    ----------
+    action_id : UUID4
+        Unique identifier for the dataflow action.
+    request_hash : str
+        Hash value of the request payload, used for deduplication or caching.
+    request : DataflowRequestModel
+        The original request model containing parameters for the dataflow action.
+    response : Optional[DataflowResponseModel], optional
+        The response model containing the results of the dataflow action.
+        Defaults to None if no response is available yet.
+    data_created : str
+        Timestamp indicating when the dataflow action was created.
+    """
+
+    action_id: UUID4
+    request_hash: str
+    status: DataflowActionStatusType
+    request: DataflowRequestModel
+    response: Optional[DataflowResponseModel] = None
+    data_created: str

@@ -3,7 +3,7 @@
 Working with Arrays
 ===================
 
-All step variables in Eptalights Sophia are represented as **tokenized operands** (`TokenizedOperandModel`). This means that every variable retains its full contextual details, including associated symbols (e.g., array indices) and constants, making it easier to perform fine-grained analysis.
+All step variables in Eptalights are represented as **tokenized operands** (`TokenizedOperandModel`). This means that every variable retains its full contextual details, including associated symbols (e.g., array indices) and constants, making it easier to perform fine-grained analysis.
 
 
 1. Array Basics
@@ -118,7 +118,7 @@ For better readability, you can use ``pretty_print_tokens()`` to visualize the t
 	 """
 
 
-While it's possible to manually process `TokenizedOperandModel` instances by iterating through their tokens, **Sophia** provides a suite of **helper functions** to simplify working with complex variables, such as arrays. These helpers abstract away the need to manually filter tokens, especially when dealing with multi-dimensional arrays or nested expressions.
+While it's possible to manually process `TokenizedOperandModel` instances by iterating through their tokens, **Eptalights** provides a suite of **helper functions** to simplify working with complex variables, such as arrays. These helpers abstract away the need to manually filter tokens, especially when dealing with multi-dimensional arrays or nested expressions.
 
 Let’s revisit the previous example involving an assignment to an array element (``arr[0]``). Here's how you can leverage the helper functions to work with the array indices.
 

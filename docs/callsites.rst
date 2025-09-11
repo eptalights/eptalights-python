@@ -6,7 +6,7 @@ Working with Callsites
 Find out where specific functions are called and which variables are used as arguments. 
 We can globally search for callsite function or search within a specific function.
 
-Data model or structure for callsite - :class:`~eptalights_sophia.models.sophia_ir.callsite.CallsiteModel` :class:`~eptalights_sophia.models.sophia_ir.callsite.CallsiteManagerModel`
+Data model or structure for callsite - :class:`~eptalights_code.models.sophia_ir.callsite.CallsiteModel` :class:`~eptalights_code.models.sophia_ir.callsite.CallsiteManagerModel`
 
 
 1. searching callsites globally across all functions

@@ -3,9 +3,9 @@
 Working with Variables
 ======================
 
-Everything concerning variables of a function is managed through the function's ``variable_manager`` which is a :class:`~eptalights_sophia.models.sophia_ir.variable.VariableManagerModel` data model.
+Everything concerning variables of a function is managed through the function's ``variable_manager`` which is a :class:`~eptalights_code.models.sophia_ir.variable.VariableManagerModel` data model.
 
-Data model or structure for variables - :class:`~eptalights_sophia.models.sophia_ir.variable.VariableManagerModel` :class:`~eptalights_sophia.models.sophia_ir.variable.VariableModel` :class:`~eptalights_sophia.models.sophia_ir.variable.SSAVariableModel`
+Data model or structure for variables - :class:`~eptalights_code.models.sophia_ir.variable.VariableManagerModel` :class:`~eptalights_code.models.sophia_ir.variable.VariableModel` :class:`~eptalights_code.models.sophia_ir.variable.SSAVariableModel`
 
 
 1. print variable names in a function
@@ -61,8 +61,8 @@ Therefore dumping the informal representation or `__str__` will give you the Pyd
 
 .. code-block:: python
 
-	import eptalights
-	from eptalights import models
+	import eptalights_code
+	from eptalights_code import models
 
 
 	fn = api.get_function_by_id(fid="/example/src/02_pointer_arithmetic.cc:main#1")

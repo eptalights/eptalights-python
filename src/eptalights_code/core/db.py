@@ -2,17 +2,32 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
-from sqlalchemy import String
+from sqlalchemy import String, DateTime, Boolean
 from sqlalchemy.dialects.sqlite import TEXT as SQLITE_TEXT
 from sqlalchemy import ForeignKey
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
+from sqlalchemy import Index
+from sqlalchemy.exc import IntegrityError
 
+from pydantic import UUID4
 import msgpack
+import dill
+from datetime import datetime
+import time
+import uuid
+import xxhash
+import base64
 
-from eptalights_sophia import models
+from eptalights_code import models
+
+ITER_DATAFLOW_ACTIONS_PAGE_SIZE = 25
+
+
+def generate_uuid():
+    return str(uuid.uuid4())
 
 
 class Base(DeclarativeBase):
@@ -42,6 +57,33 @@ class FileMetadataTbl(Base):
     __tablename__ = "file_metadata"
     filepath: Mapped[str] = mapped_column(String, primary_key=True, unique=True)
     file_metadata_data: Mapped[str] = mapped_column(SQLITE_TEXT, nullable=True)
+
+
+class DataflowActionTbl(Base):
+    __tablename__ = "dataflow_actions"
+    _table_args__ = (
+        Index("action_id_date_created_index", "date_created", "action_id"),
+        Index(
+            "action_id_date_created_status_index", "date_created", "action_id", "status"
+        ),
+    )
+
+    action_id: Mapped[str] = mapped_column(
+        String, primary_key=True, default=generate_uuid
+    )
+    status: Mapped[str] = mapped_column(String, unique=False, nullable=False)
+    dataflow_request_hash: Mapped[str] = mapped_column(
+        String, index=True, nullable=True
+    )
+    dataflow_request_b64: Mapped[str] = mapped_column(SQLITE_TEXT, nullable=False)
+    dataflow_response_b64: Mapped[str] = mapped_column(SQLITE_TEXT, nullable=True)
+    delete_after_read: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    data_created: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+    def data_created_as_ts(self):
+        return str(time.mktime(self.data_created.timetuple()))
 
 
 class DatabaseAPI:
@@ -241,3 +283,178 @@ class DatabaseAPI:
         )
         file_data: models.FileDataModel = self.get_file_data_by_metadata(file_metadata)
         return file_data
+
+    def _encode_dataflow_action_request_to_b64(self, df_reqeust):
+        request_bytes = dill.dumps(df_reqeust)
+        request_b64 = base64.b64encode(request_bytes).decode()
+        return request_b64
+
+    def _decode_dataflow_action_request_from_b64(self, df_reqeust_64):
+        df_reqeust_b64 = base64.b64decode(df_reqeust_64)
+        df_reqeust = dill.loads(df_reqeust_b64)
+        return df_reqeust
+
+    def create_dataflow_action(
+        self,
+        df_reqeust: models.DataflowRequestModel,
+        delete_after_read: bool = False,
+    ) -> models.DataflowActionModel:
+        df_request_b64 = self._encode_dataflow_action_request_to_b64(df_reqeust)
+        request_bytes = base64.b64decode(df_request_b64)
+        request_hash = xxhash.xxh64(request_bytes).hexdigest()
+
+        df_response = models.DataflowResponseModel(status=True, paths=[])
+        df_response_b64 = self._encode_dataflow_action_request_to_b64(df_response)
+
+        with self._db_session:
+            try:
+                df = DataflowActionTbl(
+                    status=models.DataflowActionStatusType.LOCAL_PENDING.value,
+                    dataflow_request_hash=request_hash,
+                    dataflow_request_b64=df_request_b64,
+                    dataflow_response_b64=df_response_b64,
+                    delete_after_read=(
+                        delete_after_read
+                        if isinstance(delete_after_read, bool)
+                        else False
+                    ),
+                )
+
+                self._db_session.add_all([df])
+                self._db_session.commit()
+
+                df_action = models.DataflowActionModel(
+                    action_id=df.action_id,
+                    status=models.DataflowActionStatusType.LOCAL_PENDING,
+                    request_hash=request_hash,
+                    request=df_reqeust,
+                    response=df_response,
+                    data_created=df.data_created_as_ts(),
+                )
+                return df_action
+            except IntegrityError:
+                pass
+            except Exception as e:
+                raise e
+
+    def delete_dataflow_action(self, action_id: UUID4 | str):
+        stmt = select(DataflowActionTbl).where(
+            DataflowActionTbl.action_id == str(action_id)
+        )
+        result = self._db_session.execute(stmt).scalar_one_or_none()
+        if result is None:
+            raise Exception("Dataflow Action not found")
+
+        self._db_session.delete(result)
+        self._db_session.commit()
+
+    def get_dataflow_action(self, action_id: UUID4 | str) -> models.DataflowActionModel:
+        stmt = select(DataflowActionTbl).where(
+            DataflowActionTbl.action_id == str(action_id)
+        )
+        result = self._db_session.execute(stmt).scalar_one_or_none()
+        if result is None:
+            raise Exception("Dataflow Action not found")
+
+        df_action = models.DataflowActionModel(
+            action_id=result.action_id,
+            request_hash=result.dataflow_request_hash,
+            status=models.DataflowActionStatusType(result.status),
+            request=self._decode_dataflow_action_request_from_b64(
+                result.dataflow_request_b64
+            ),
+            response=self._decode_dataflow_action_request_from_b64(
+                result.dataflow_response_b64
+            ),
+            data_created=result.data_created_as_ts(),
+        )
+
+        if (
+            result.status == models.DataflowActionStatusType.DONE.value
+            and result.delete_after_read
+        ):
+            self.delete_dataflow_action(action_id)
+
+        return df_action
+
+    def iter_dataflow_actions(
+        self,
+        status: models.DataflowActionStatusType = None,
+    ) -> list[models.DataflowActionModel]:
+
+        ITER_DATAFLOW_ACTIONS_PAGE_SIZE = 25
+
+        def yield_actions():
+            offset = 0
+            while True:
+                stmt = (
+                    select(DataflowActionTbl)
+                    .order_by(
+                        DataflowActionTbl.data_created, DataflowActionTbl.action_id
+                    )
+                    .limit(ITER_DATAFLOW_ACTIONS_PAGE_SIZE)
+                    .offset(offset)
+                )
+
+                if status is not None and isinstance(
+                    status, models.DataflowActionStatusType
+                ):
+                    stmt = stmt.where(DataflowActionTbl.status == status.value)
+
+                rows = self._db_session.scalars(stmt).all()
+                if not rows:
+                    break
+
+                for row in rows:
+                    yield row
+
+                offset += ITER_DATAFLOW_ACTIONS_PAGE_SIZE
+
+        with self._db_session:
+            for action in yield_actions():
+                df_action = models.DataflowActionModel(
+                    action_id=action.action_id,
+                    request_hash=action.dataflow_request_hash,
+                    status=models.DataflowActionStatusType(action.status),
+                    request=self._decode_dataflow_action_request_from_b64(
+                        action.dataflow_request_b64
+                    ),
+                    response=self._decode_dataflow_action_request_from_b64(
+                        action.dataflow_response_b64
+                    ),
+                    data_created=action.data_created_as_ts(),
+                )
+                yield df_action
+
+    def update_dataflow_action(
+        self,
+        action_id: UUID4 | str,
+        status: models.DataflowActionStatusType = None,
+        response_b64: str = None,
+        delete_after_read: bool = None,
+    ):
+        with self._db_session:
+            stmt = select(DataflowActionTbl).where(
+                DataflowActionTbl.action_id == str(action_id)
+            )
+            result = self._db_session.execute(stmt).scalar_one_or_none()
+            if result is None:
+                return
+
+            if status is not None and isinstance(
+                status, models.DataflowActionStatusType
+            ):
+                if result.status != "DONE":
+                    result.status = status.value
+
+            if response_b64 is not None:
+                df_response = self._decode_dataflow_action_request_from_b64(
+                    response_b64
+                )
+                if isinstance(df_response, models.DataflowResponseModel):
+                    result.dataflow_response_b64 = response_b64
+
+            if delete_after_read is not None and isinstance(delete_after_read, bool):
+                result.delete_after_read = delete_after_read
+
+            self._db_session.commit()

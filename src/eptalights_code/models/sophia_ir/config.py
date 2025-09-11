@@ -21,7 +21,7 @@ class ConfigModel(BaseModel):
         The path to the database storing extracted information. Defaults to None.
     output_decompiled_path : str, optional
         The destination path for storing decompiled code. Defaults to
-        "./__eptalights_sophia_decompiled_code/".
+        "./__eptalights_decompiled_code/".
     """
 
     project_id: Optional[str] = None
@@ -29,4 +29,4 @@ class ConfigModel(BaseModel):
     code_type: str  # Example values: gcc_gimple, php_opcode, jvm_jimple
     storage_backend: Optional[str] = "sqlite3"  # Default: sqLite3; extensible later
     local_database_path: Optional[str] = None
-    output_decompiled_path: Optional[str] = "./__eptalights_sophia_decompiled_code/"
+    output_decompiled_path: Optional[str] = "./__eptalights_decompiled_code/"

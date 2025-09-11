@@ -1,8 +1,8 @@
 from pydantic import BaseModel, field_serializer
 from typing import List, Optional, Dict, Any
-from eptalights_sophia.models.sophia_ir.enum_types import VarType
-from eptalights_sophia.models.sophia_ir.tokenized_operand import TokenizedOperandModel
-from eptalights_sophia.core.printer import PrettyPrinter
+from eptalights_code.models.sophia_ir.enum_types import VarType
+from eptalights_code.models.sophia_ir.tokenized_operand import TokenizedOperandModel
+from eptalights_code.core.printer import PrettyPrinter
 
 
 class SSAVariableModel(BaseModel):

@@ -1,7 +1,7 @@
 .. _cpp_support:
 
-Working with C++ Data Types
-===========================
+Working with C++
+================
 
 We'll dive into how to analyze **C++ functionalities** like ``vectors``, ``maps``, ``operator overloading``, ``function overloading``, etc.
 
@@ -9,7 +9,7 @@ We'll dive into how to analyze **C++ functionalities** like ``vectors``, ``maps`
 1. Hello World in C++
 ---------------------
 
-First, let's understanding how a simple **Hello World** program translates into **GIMPLE IR** and how we can interpret this using Python.
+First, let's understanding how a simple **Hello World** program translates into **Sophia-IR** and how we can interpret this using Python.
 
 .. code-block:: c++
 
@@ -20,7 +20,7 @@ First, let's understanding how a simple **Hello World** program translates into 
 	    return 0;
 	}
 
-When you compile this using **GCC** and inspect the **GIMPLE IR** (GCC’s intermediate representation), it appears as:
+When you compile this using **GCC** and inspect the **Gimple-IR** (GCC’s intermediate representation), it appears as:
 
 .. code-block:: c++
 
@@ -42,7 +42,7 @@ When you compile this using **GCC** and inspect the **GIMPLE IR** (GCC’s inter
 - **GIMPLE IR Simplifies C++ Constructs:**  
   Even complex C++ features like operator overloading get reduced to basic function calls, which can be analyzed systematically.
 
-Using the **`eptalights sophia`** library, we can convert and decompile this GIMPLE IR into a **pseudo-C-like code** to easily understand what's happening.
+Using the **`eptalights`**  code analysis library, we can convert and decompile this GIMPLE-IR into a **pseudo-C-like code** to easily understand what's happening.
 
 .. code-block:: python
 
@@ -256,7 +256,7 @@ Let's start by decompiling the Pseudo-C code for a simple vector example to see 
 	}
 	"""
 
-In **GIMPLE IR**, C++ ``std::vector`` is essentially treated as a ``struct``. Let's inspect the type of the ``vect`` variable.
+In **Sophia-IR**, C++ ``std::vector`` is essentially treated as a ``struct``. Let's inspect the type of the ``vect`` variable.
 
 .. code-block:: python
 
@@ -271,7 +271,7 @@ In **GIMPLE IR**, C++ ``std::vector`` is essentially treated as a ``struct``. Le
 	struct vector
 	"""
 
-C++ vectors are represented as ``struct vector`` types in GIMPLE IR, and operations like ``push_back`` are treated as function calls.
+C++ vectors are represented as ``struct vector`` types in Sophia-IR, and operations like ``push_back`` are treated as function calls.
 
 1. **Vector Initialization:**
    ```c++
@@ -344,7 +344,7 @@ To isolate just the numeric values being assigned, we can print the **left-hand 
 4. Working with maps
 --------------------
 
-When we declare a map like ``std::map<std::string, int> mp;``, the **pPseudo-C** representation shows it as a `struct map`.
+When we declare a map like ``std::map<std::string, int> mp;``, the **Pseudo-C** representation shows it as a `struct map`.
 
 .. code-block:: c++
 
@@ -406,7 +406,7 @@ To clarify, the above can be simplified into the following Pseudo-C code:
 	*$T1 = 1;
 
 
-Now, let's see how to extract all keys from the map using eptalights sophia.
+Now, let's see how to extract all keys from the map using eptalights.
 
 .. code-block:: python
 
@@ -482,15 +482,15 @@ Now, let's see how to extract all keys from the map using eptalights sophia.
 	""three""
 	"""
 
-1. **Maps in GIMPLE IR:**
-   - C++ ``std::map`` is represented as a ``struct map`` in GIMPLE IR.
+1. **Maps in Sophia-IR:**
+   - C++ ``std::map`` is represented as a ``struct map`` in Sophia-IR.
    - The ``operator[]`` function is used for inserting and accessing values.
 
 2. **Tracking Key Insertion:**
    - The key is created using ``basic_string``, and its value is stored in a temporary variable.
    - The value is then assigned to the map using the pointer returned from ``operator[]``.
 
-3. **Extracting Keys and Values with eptalights sophia:**
+3. **Extracting Keys and Values with eptalights:**
    - By identifying ``operator[]`` callsites and tracing their arguments, we can retrieve all the keys inserted into the map.
 
 
@@ -499,7 +499,7 @@ Now, let's see how to extract all keys from the map using eptalights sophia.
 
 Function overloading allows multiple functions to have the same name but differ in **argument types** or **number of parameters**.
 
-In **Eptalights sophia**, overloaded functions are uniquely identified by their **function IDs (fid)**.
+In **Eptalights**, overloaded functions are uniquely identified by their **function IDs (fid)**.
 
 To identify overloaded functions, we can list all functions in a file and observe multiple entries for the same function name but with different identifiers (``#1``, ``#2``, ``#3``, etc.).
 
@@ -600,7 +600,7 @@ Even though ``Geeks::func#1`` and ``Geeks::func#2`` have the same number of argu
 - **`Geeks::func#2`** accepts a **double** argument.
 
 1. **Unique Identification:**  
-   In Eptalights SophiaIR, each overloaded function is uniquely identified by its ``fid``, such as ``Geeks::func#1``, ``Geeks::func#2``, etc.
+   In Eptalights Sophia-IR, each overloaded function is uniquely identified by its ``fid``, such as ``Geeks::func#1``, ``Geeks::func#2``, etc.
 
 2. **Differentiation Criteria:**  
    Overloaded functions differ by:

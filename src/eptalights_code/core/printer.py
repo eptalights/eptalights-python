@@ -1,6 +1,6 @@
-from eptalights_sophia.printers.pseudo_c import PseudoCPrettyPrinter
+from eptalights_code.printers.pseudo_c import PseudoCPrettyPrinter
 
-# from eptalights_sophia.printers.pseudo_c import PseudoCPrettyPrinterColored
+# from eptalights_code.printers.pseudo_c import PseudoCPrettyPrinterColored
 
 
 DEFAULT_PRETTY_PRINTER = "pseudo_c"
