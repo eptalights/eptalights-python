@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from eptalights_code.core.printer import PrettyPrinter
+from eptalights.core.printer import PrettyPrinter
 
 
 class AutoStrEnum(str, Enum):

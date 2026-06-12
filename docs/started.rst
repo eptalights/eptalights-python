@@ -3,69 +3,144 @@
 Getting Started
 ===============
 
-Eptalights makes code analysis easier, faster, and more efficient. Whether you're a developer, researcher, or security expert, our technology simplifies complex processes into ``three`` powerful steps:
+Eptalights simplifies large-scale code analysis by transforming application artifacts into searchable datasets and APIs. The workflow consists of **three main steps**:
 
+#. Extract analysis data from your application
+#. Configure your workspace and create a build
+#. Explore the resulting analysis database
 
-1. Extract ByteCode or IR Data from Your Source Code
-----------------------------------------------------
-
-Eptalights makes it easy to extract ByteCode or Intermediate Representation (IR) from your source code. Whether you're analyzing C, C++, or other languages, our tools simplify the process, giving you quick access to the underlying structure of your code. Currently Supported Languages:
-
-- **C/C++** (using `eptalights-code-extractor-cxx <https://github.com/eptalights/eptalights-code-extractor-cxx>`_)
-- **PHP** (using `eptalights-code-extractor-php <https://github.com/eptalights/eptalights-code-extractor-php>`_)
-- **Java** (using `eptalights-code-extractor-java <https://github.com/eptalights/eptalights-code-extractor-java>`_)
-- **More to be Added ...**
-
-Visit any of our supported language extractor and follow the documentation to generate the IR/bytecode in your desired directory.
-
-
-2. Transform And Lift Code to SophiaIR models
+1. Extract Analysis Data from Your Application
 ----------------------------------------------
 
-Once you've extracted the ByteCode or IR, leverage our powerful cloud-based lifter to convert it into a streamlined set of ``SophiaIR`` models below. 
+Before running an analysis, generate the intermediate representation (IR), bytecode, or instruction data required by the platform.
 
-1. Functions - :class:`~eptalights_code.models.sophia_ir.function.FunctionModel`  
-2. Control Flow graphs (CFG) - :class:`~eptalights_code.models.sophia_ir.cfg.ControlFlowGraphModel`  
-3. Call Sites - :class:`~eptalights_code.models.sophia_ir.callsite.CallsiteModel`  
-4. Variables (defined/used) - :class:`~eptalights_code.models.sophia_ir.variable.VariableModel` 
-5. File Metadata - :class:`~eptalights_code.models.sophia_ir.file_metadata.FileMetadataModel`  
-6. Class Metadata - :class:`~eptalights_code.models.sophia_ir.file_metadata.ClassMetadataModel`  
-7. More ...
+Choose the extractor that matches your technology stack:
 
-This transformation helps in simplifying complex code, making it easier to analyze, detect bugs or variants, and understand and spot patterns without getting lost in complicated details.
+* **C/C++ Applications** — Generate GIMPLE IR directly from your source code using the GCC plugin:
 
-.. note:: 
-   Our cloud-based lifter is currently in ``beta``, but we're here to help! If you need assistance transforming your code, we're happy to do it for you. Feel free to reach out to us `here <https://calendly.com/eptalights>`_.
+  `eptalights-extractor-cxx <https://github.com/eptalights/eptalights-extractor-cxx>`_
 
+* **PHP Applications** — Extract PHP bytecode for analysis using:
 
-3. Flexible Database Access
----------------------------
+  `eptalights-extractor-php <https://github.com/eptalights/eptalights-extractor-php>`_
 
-Choose how you interact with your data:
+* **JVM-Based Applications** — Extract bytecode and metadata from Java, Kotlin, Scala, Groovy, Clojure, and other JVM languages. Supports class files, JARs, WARs, EARs, and packaged applications:
 
-- **Local Access**: Download the database and work offline with ease.
+  `eptalights-extractor-java <https://github.com/eptalights/eptalights-extractor-java>`_
+
+* **Additional language extractors** — Coming soon.
+
+Follow the documentation for your selected extractor to generate the required analysis artifacts and store them in a directory of your choice.
+
+2. Configure Your Workspace and Create a Build
+----------------------------------------------
+
+After generating the extractor output, create a dedicated workspace for your Eptalights project. This workspace will contain your configuration file and any generated analysis databases.
+
+**Important:** This step requires a valid `project_id`.
+
+* Projects can be created at: `https://platform.eptalights.com/ <https://platform.eptalights.com/>`_
+* The code type of your project **must match the extractor** used in Step 1.
+* Once your project is created, copy the `project_id` into your ``eptalights.toml`` configuration file.
+* For shared projects, copy the shared project ID into your configuration file instead.
+
+Create and enter a project directory:
+
+.. code-block:: bash
+
+   mkdir your-project-name
+   cd your-project-name
+
+Install the Eptalights CLI and SDK:
+
+.. code-block:: bash
+
+   pip install eptalights
+
+Configure authentication:
+
+.. code-block:: bash
+
+   export EPTALIGHTS_API_KEY="your-api-token"
+
+Create an ``eptalights.toml`` file in the workspace:
+
+.. code-block:: toml
+
+   project_id = "your-project-id"
+   extractor_output_path = "path-to-extractor-output"
+
+Where:
+
+* ``project_id`` — Your Eptalights project identifier (from the platform or shared project).
+* ``extractor_output_path`` — Path to the directory containing the IR or bytecode generated in Step 1.
+
+Create a build:
+
+.. code-block:: bash
+
+   eptalights_builder --name your-unique-build-name
+
+**Notes:**
+
+* Build names must be unique within a project.
+* Common choices: version numbers, release tags, commit hashes, CI/CD build identifiers.
+
+After the build completes, download the generated analysis database:
+
+.. code-block:: bash
+
+   eptalights_downloader --name your-unique-build-name
+
+.. important::
+
+   Both ``eptalights_builder`` and ``eptalights_downloader`` must be executed from the directory containing the ``eptalights.toml`` file.
+
+3. Explore Your Analysis Database
+---------------------------------
+
+Once the database has been downloaded, you can query it locally using the Eptalights API.
 
 .. code-block:: python
-	
-	import eptalights_code
-	api = eptalights_code.LocalAPI("eptalights_code.toml")
 
-	for fn in api.search_functions():
-	    print(fn.name)
+   import eptalights
 
-	# output
-	"""
-	main
-	main
-	main
-	addNumbers
-	addNumbers
-	main
-	main
-	main
-	main
-	"""
+   api = eptalights.LocalAPI("eptalights.toml")
 
-Visit other pages to learn how to navigate through functions, call sites, CFGs, variables, and more.
+   for fn in api.search_functions():
+       print(fn.name)
 
-	
+Example output:
+
+.. code-block:: text
+
+   main
+   main
+   main
+   addNumbers
+   addNumbers
+   main
+   main
+   main
+   main
+
+The local API provides access to rich analysis data, including:
+
+* Functions
+* Control Flow Graphs (CFGs)
+* Call Sites
+* Variables
+* File Metadata
+* Class Metadata
+* Additional program structures
+
+Continue to the following sections to learn how to search, navigate, and analyze your application using the Eptalights API.
+
+----
+
+Questions or need help?
+-----------------------
+
+Join our Discord for support and discussions:
+
+`Eptalights Discord <https://discord.gg/mskuGs3EC>`_

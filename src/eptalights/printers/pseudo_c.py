@@ -1,4 +1,4 @@
-from eptalights_code.printers.base import PrettyPrinterBase
+from eptalights.printers.base import PrettyPrinterBase
 import re
 
 from pygments import highlight

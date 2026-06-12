@@ -1,12 +1,12 @@
 from typing import List, Optional, Union, Callable
-from pydantic import BaseModel, UUID4
+from pydantic import BaseModel
 from enum import auto
-from eptalights_code.models.sophia_ir.enum_types import (
+from eptalights.models.sophia_ir.enum_types import (
     AutoStrEnum,
     OpType,
     DataflowActionStatusType,
 )
-from eptalights_code.models.sophia_ir import function as function_model
+from eptalights.models.sophia_ir import function as function_model
 
 
 class SinkResultType(AutoStrEnum):
@@ -240,7 +240,7 @@ class DataflowActionModel(BaseModel):
 
     Attributes
     ----------
-    action_id : UUID4
+    action_id : str
         Unique identifier for the dataflow action.
     request_hash : str
         Hash value of the request payload, used for deduplication or caching.
@@ -253,9 +253,10 @@ class DataflowActionModel(BaseModel):
         Timestamp indicating when the dataflow action was created.
     """
 
-    action_id: UUID4
+    action_id: str
     request_hash: str
     status: DataflowActionStatusType
     request: DataflowRequestModel
     response: Optional[DataflowResponseModel] = None
+    remote_action_id: Optional[str] = None
     data_created: str

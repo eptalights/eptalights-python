@@ -1,11 +1,12 @@
 import os
 import tomllib
 import pathlib
+
 import msgpack
 import json
 from typing import Any
 
-from eptalights_code.models import (
+from eptalights.models import (
     ConfigModel,
     BasicGimpleFunctionModel,
     BasicOpcodeFunctionModel,

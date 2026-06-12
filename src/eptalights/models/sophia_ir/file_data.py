@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Dict
-from eptalights_code.models.sophia_ir.tokenized_operand import TokenizedOperandModel
-from eptalights_code.models.sophia_ir.function import FunctionModel
-from eptalights_code.core.printer import PrettyPrinter
+from eptalights.models.sophia_ir.tokenized_operand import TokenizedOperandModel
+from eptalights.models.sophia_ir.function import FunctionModel
+from eptalights.core.printer import PrettyPrinter
 
 
 class ClassDataModel(BaseModel):

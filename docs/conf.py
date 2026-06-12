@@ -6,8 +6,8 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'eptalights-code'
-copyright = '2025, Eptalights Research'
+project = 'eptalights'
+copyright = '2026, Eptalights Research'
 author = 'Eptalights Research'
 
 # -- General configuration ---------------------------------------------------

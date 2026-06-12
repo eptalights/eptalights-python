@@ -1,8 +1,8 @@
 from pydantic import BaseModel, StrictInt, field_serializer
 from typing import List, Optional, Dict
 from pprint import pprint
-from eptalights_code.models.sophia_ir.enum_types import TokenType
-from eptalights_code.core.printer import PrettyPrinter
+from eptalights.models.sophia_ir.enum_types import TokenType
+from eptalights.core.printer import PrettyPrinter
 
 
 class TokenModel(BaseModel):

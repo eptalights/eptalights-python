@@ -3,7 +3,7 @@
 Working with Functions
 ======================
 
-Eptalights breaks everything down into functions, along with their related context-like the class they belong to and the file where they’re defined. This forms the core structure of the function-level data model. The Data model or structure for function - :class:`~eptalights_code.models.sophia_ir.function.FunctionModel`
+Eptalights breaks everything down into functions, along with their related context-like the class they belong to and the file where they’re defined. This forms the core structure of the function-level data model. The Data model or structure for function - :class:`~eptalights.models.sophia_ir.function.FunctionModel`
 
 
 1. get total functions

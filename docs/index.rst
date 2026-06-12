@@ -1,10 +1,10 @@
-.. eptalights-code-python documentation master file, created by
+.. eptalights-python documentation master file, created by
    sphinx-quickstart on Fri Jan 31 22:35:51 2025.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-eptalights code analysis documentation
-======================================
+eptalights analysis documentation
+=================================
 
 The **Eptalights Code Analysis Library** is a powerful Python package designed to help hackers, researchers, and developers effortlessly perform code analysis, discover bugs, conduct variant analysis, and more.
 
@@ -47,8 +47,8 @@ Links
    cpp_support
    php_support
    java_support
-   dataflow
    files
+   dataflow
    raw
    config
    api
